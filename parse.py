@@ -41,8 +41,17 @@ class MyHTMLParser(HTMLParser):
         print "?Encountered an unwanted start tag:", tag # only gets here if no wanted tags/attributes are seen
     def handle_endtag(self, tag):
         if (self.stack and self.stack[-1][0] == tag):
-            t,k,v,d = self.stack.pop()
-            print "!Encountered a stacked end tag :", tag,k,v, "with ", len(d), " data items"
+            t,k,v,data = self.stack.pop()
+            disposition = self.check(tag,k,v)
+            print "!Encountered a stacked end tag (disposition==", disposition , "):", tag,k,v, "with ", len(data), " data items",
+            if (disposition == "ignore"):
+                print "??ignoring data"
+            elif (disposition == "code"):
+                print "!!emitting code :"
+                for line in data:
+                    print line
+            else:
+                print "???unknown disposition!"
         else:
             print "?Encountered an unwanted end tag :", tag
     def handle_data(self, data):
@@ -59,5 +68,11 @@ parser = MyHTMLParser()
 parser.register("","class","screen","code")
 parser.register("","class", "programlisting brush: bash; " ,"code")
 parser.register("code","","","code")
+parser.register("script","","","ignore")
+parser.register("style","","","ignore")
+parser.register("","class","navLinks","ignore")
+parser.register("","class","statustext","ignore")
+parser.register("","class","breadcrumbs","ignore")
+parser.register("","id","toolbar","ignore")
 parser.feed(my_file.read())
 parser.close()
