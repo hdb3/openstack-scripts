@@ -16,10 +16,10 @@ class MyHTMLParser(HTMLParser):
         """Initialize and reset this instance."""
         self.reset()
         self.tag_stack = []
-        self.mode_stack = ["before doc start"]
+        self.mode_stack = ["**INIT**"]
         self.unwanted_data = ""
         self.watches ={}
-        # self.mode = ["before doc start"]
+        # self.mode = ["**INIT**"]
         self.comment = []
         self.code = []
 
@@ -45,86 +45,107 @@ class MyHTMLParser(HTMLParser):
         return None
 
     def checks(self,tag,attrs):
-        for (k,v) in attrs:
-            mode = self.check(tag,k,v)
+        if (attrs):
+            for (k,v) in attrs:
+                mode = self.check(tag,k,v)
+                if (mode):
+                    return((k,v,mode)) # guarantees that we only react to the first match
+        else:
+            mode = self.check(tag,"","") # now handle case where the tag has no attributes
             if (mode):
-                return((k,v,mode)) # guarantees that we only react to the first match
-        return None
+                return (None,None,self.check(tag,"","")) 
 
     def handle_starttag(self, tag, attrs):
+        mode_change = False
+        print "?STARTTAG ",
         checked = self.checks(tag,attrs)
         self.tag_stack.append((checked,tag))
         if (not checked):
-            print "?Encountered an unregistered start tag :", tag
+            print "Unregistered start tag :", tag
         else:
             k,v,mode=checked
-            print "!Encountered a registered start tag (mode==", mode , "):", tag,k,v,
-            if (self.mode() == "before doc start"):
-                print "??before start of document"
+            print "Registered start tag (mode==", mode , "):", tag,k,v,
+
+            modes = self.mode(),mode
+            mode_change = ( modes[0] != modes[1] ) # this is a mode change transition
+            if (self.mode() == "**INIT**"):
+                print "before start of document"
                 assert mode == "html"
             elif (self.mode() == "after end of doc"):
-                print "??after end of document"
+                print "after end of document"
                 assert False
-            elif (mode == "body"):
-                assert self.mode() == ""
-                print "##start of document"
+            elif (mode == "html"):
+                assert self.mode() == "**INIT**"
+                print "start of document"
             else:
-                if (mode == "ignore"):
-                    print "??ignoring data"
+                if (mode == "body"):
+                    print "comment text starting"
+                elif (mode == "ignore"):
+                    print "ignoring data"
                 elif (mode == "code"):
                     # assert self.mode() == "body" # no nested code sections allowed
                     if ( self.mode() == "body" ): # no nested code sections allowed
                         print "warning: nested code tags!"
-                    print "!!emitting code :"
-                    for data in self.code:
-                        print "!!",data
                 else:
-                    print "???unknown mode!"
+                    print "unknown mode!"
                     assert False
             self.mode_set(mode)
+        if( mode_change):
+            print "MODE CHANGE :", modes[0], " -> ", modes[1]
+
 
     def handle_endtag(self, tag):
+        mode_change = False
+        print "?ENDTAG ",
         checked,start_tag = self.tag_stack.pop()
         if (not checked):
-            print "?Encountered an unregistered end tag :", tag
+            print "Unregistered end tag :", tag
         else:
             k,v,mode=checked
-            print "!Encountered a registered end tag (current mode == ", self.mode(),", tag mode ==", mode , "):", tag,k,v,
+            print "Registered end tag (current mode == ", self.mode(),", tag mode ==", mode , "):", tag,k,v,
             if (not self.tag_stack):
                 assert mode == "html"
                 self.mode_set("after end of doc")
             else: # there is at least one tag below us still on the stack...
                 assert mode == self.mode()
+                modes = self.mode_stack[-1],self.mode_stack[-2]
+                mode_change = (modes[0] != modes[1]) # this is a mode change transition
                 self.mode_pop()
                 if (tag == "body"):
                     print "##end of document"
                     # do any final cleanup if needed
                 elif (mode == "ignore"):
-                    print "??ignoring data"
+                    print "ignoring data"
                 elif (mode == "code"):
-                    print "!!emitting code :"
+                    print "emitting code :"
                     for data in self.code:
                         print "!!",data
                 else:
-                    print "???unknown mode!"
+                    print "unknown mode!"
                     assert False
+        if( mode_change):
+            print "MODE CHANGE :", modes[0], " -> ", modes[1]
 
     def handle_data(self, data):
+        print "?DATA (",self.mode(),") ",
         if (self.mode() == "code"):
-            print "!Encountered some code  :", data
+            print "Data :", data
             self.code.append(data)
         elif (self.mode() == "body"):
-            print "!Encountered some body text  :", data
+            print "Body text  :", data
             # self.comment += ' '.join(data.translate(None,"\n\t").split())
             self.comment.append(data)
         elif (self.mode() == "ignore"):
             pass
+            print
         elif (self.mode() == "html"):
             pass
-        elif (self.mode() == "before doc start"):
+            print
+        elif (self.mode() == "**INIT**"):
             pass
+            print
         else:
-            print "Mode: ", self.mode(), " ?Encountered some unexpected data  :", data
+            print "Mode: ", self.mode(), "Unexpected data  :", data
             assert False
 
 my_file = open(sys.argv[1], 'r')
