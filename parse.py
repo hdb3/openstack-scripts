@@ -16,6 +16,7 @@ class MyHTMLParser(HTMLParser):
         """Initialize and reset this instance."""
         self.reset()
         self.stack = []
+        self.unwanted_data = ""
         self.watches ={}
 
     def register(self,tag,attr,val,type):
@@ -32,6 +33,9 @@ class MyHTMLParser(HTMLParser):
         for (k,v) in attrs:
             if (self.check(tag,k,v)):
                 print "!Encountered a wanted tag:", tag,k,v
+                if (not self.stack and self.unwanted_data): # we are entering at top level so there may be some 'unwanted' data backed up....
+                    print "??Here is some unwanted data...: ", self.unwanted_data
+                    self.unwanted_data=""
                 self.stack.append((tag,k,v,[]))
                 return # prevent pushing multiple items since we won't know how to remove them
         print "?Encountered an unwanted start tag:", tag # only gets here if no wanted tags/attributes are seen
@@ -47,6 +51,7 @@ class MyHTMLParser(HTMLParser):
             self.stack[-1][3].append(data)
         else:
             print "?Encountered some unwanted data  :", data
+            self.unwanted_data += ' '.join(data.translate(None,"\n\t").split())
 
 my_file = open(sys.argv[1], 'r')
 
