@@ -23,6 +23,9 @@ class MyHTMLParser(HTMLParser):
         self.comment = []
         self.code = []
 
+    def normalise(self,s):
+        return ' '.join(s.translate(None,"\n\t").split())
+
     def mode(self):
         return self.mode_stack[-1]
 
@@ -57,7 +60,7 @@ class MyHTMLParser(HTMLParser):
 
     def handle_starttag(self, tag, attrs):
         mode_change = False
-        print "?STARTTAG ",
+        print "?STARTTAG (",self.mode(),") ",
         checked = self.checks(tag,attrs)
         self.tag_stack.append((checked,tag))
         if (not checked):
@@ -91,12 +94,12 @@ class MyHTMLParser(HTMLParser):
                     assert False
             self.mode_set(mode)
         if( mode_change):
-            print "MODE CHANGE :", modes[0], " -> ", modes[1]
+            print "?MODE CHANGE :", modes[0], " -> ", modes[1]
 
 
     def handle_endtag(self, tag):
         mode_change = False
-        print "?ENDTAG ",
+        print "?ENDTAG (",self.mode(),") ",
         checked,start_tag = self.tag_stack.pop()
         if (not checked):
             print "Unregistered end tag :", tag
@@ -124,7 +127,7 @@ class MyHTMLParser(HTMLParser):
                     print "unknown mode!"
                     assert False
         if( mode_change):
-            print "MODE CHANGE :", modes[0], " -> ", modes[1]
+            print "?MODE CHANGE :", modes[0], " -> ", modes[1]
 
     def handle_data(self, data):
         print "?DATA (",self.mode(),") ",
@@ -132,7 +135,8 @@ class MyHTMLParser(HTMLParser):
             print "Data :", data
             self.code.append(data)
         elif (self.mode() == "body"):
-            print "Body text  :", data
+            print "Body text  :", self.normalise(data)
+            # print "Body text  :", data
             # self.comment += ' '.join(data.translate(None,"\n\t").split())
             self.comment.append(data)
         elif (self.mode() == "ignore"):
@@ -155,7 +159,7 @@ parser.register("html","","","html")
 parser.register("body","","","body")
 parser.register("","class","screen","code")
 parser.register("","class", "programlisting brush: bash; " ,"code")
-parser.register("code","","","code")
+# parser.register("code","","","code")
 parser.register("script","","","ignore")
 parser.register("style","","","ignore")
 parser.register("","class","navLinks","ignore")
