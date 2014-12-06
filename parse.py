@@ -95,7 +95,9 @@ class MyHTMLParser(HTMLParser):
 
     def flush_code(self):
         if self.code:
-            self.output.append(self.code)
+            # self.output.append(self.code)
+            munged_code=self.code.replace("\\\n","")
+            self.output.append(munged_code)
             self.code = ""
 
     def flush_comment(self):
