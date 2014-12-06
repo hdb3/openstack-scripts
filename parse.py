@@ -214,6 +214,10 @@ args=argparser.parse_args()
 input=args.infile
 output=args.outfile
 
+if (input.isatty()):
+    sys.stderr.write("No input file specified and input is not a pipe!\n")
+    sys.exit()
+
 sys.stdout = Logger()
 if (args.debug):
     sys.stdout.off()
