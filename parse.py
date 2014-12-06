@@ -49,6 +49,7 @@ class MyHTMLParser(HTMLParser):
         self.mode_stack = ["**INIT**"]
         self.unwanted_data = ""
         self.watches ={}
+        self.filenames = {}
         # self.mode = ["**INIT**"]
         self.comment = ""
         self.code = ""
@@ -140,6 +141,8 @@ class MyHTMLParser(HTMLParser):
                     # assert self.mode() == "body" # only if no nested code sections allowed
                     if ( self.mode() == "body" ): # no nested code sections allowed
                         print "warning: nested code tags!"
+                elif (mode == "filename"):
+                    pass
                 else:
                     print "unknown mode!"
                     assert False
@@ -176,6 +179,8 @@ class MyHTMLParser(HTMLParser):
                     print "ignoring data"
                 elif (mode == "code"):
                     print "emitting code :"
+                elif (mode == "filename"):
+                    pass
                 else:
                     print "unknown mode!"
                     assert False
@@ -202,6 +207,8 @@ class MyHTMLParser(HTMLParser):
             pass
         elif (mode == "**INIT**"):
             pass
+        elif (mode == "filename"):
+            self.filenames[data] = None
         else:
             print "Mode: ", mode, "Unexpected data  :", data,
              # assert False
@@ -234,6 +241,7 @@ parser.register("body","","","body")
 parser.register("","class","screen","code")
 parser.register("","class", "programlisting brush: bash; " ,"code")
 # parser.register("code","","","code")
+parser.register("code","class","filename","filename")
 parser.register("script","","","ignore")
 parser.register("style","","","ignore")
 parser.register("","class","navLinks","ignore")
@@ -245,3 +253,8 @@ result=parser.output
 parser.close()
 for line in result:
     output.write(line + '\n')
+sys.stdout.on()
+print "filenames"
+for k in iter(parser.filenames):
+    print ":: ",k
+
