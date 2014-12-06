@@ -20,7 +20,7 @@ class MyHTMLParser(HTMLParser):
         self.unwanted_data = ""
         self.watches ={}
         # self.mode = ["**INIT**"]
-        self.comment = []
+        self.comment = ""
         self.code = []
 
     def normalise(self,s):
@@ -76,7 +76,7 @@ class MyHTMLParser(HTMLParser):
                 assert mode == "html"
             elif (self.mode() == "after end of doc"):
                 print "after end of document"
-                assert False
+                 # assert False
             elif (mode == "html"):
                 assert self.mode() == "**INIT**"
                 print "start of document"
@@ -103,6 +103,8 @@ class MyHTMLParser(HTMLParser):
         checked,start_tag = self.tag_stack.pop()
         if (not checked):
             print "Unregistered end tag :", tag
+            if (self.mode() == "body" and self.comment and tag == "p"):
+                self.comment += "\n! "
         else:
             k,v,mode=checked
             print "Registered end tag (current mode == ", self.mode(),", tag mode ==", mode , "):", tag,k,v,
@@ -116,29 +118,37 @@ class MyHTMLParser(HTMLParser):
                 self.mode_pop()
                 if (tag == "body"):
                     print "##end of document"
+                    if( self.comment):
+                        self.code.append("! " + self.comment)
+                        self.comment = ""
                     # do any final cleanup if needed
                 elif (mode == "ignore"):
                     print "ignoring data"
                 elif (mode == "code"):
                     print "emitting code :"
-                    for data in self.code:
-                        print "!!",data
+                    # for data in self.code:
+                        # print "!!",data
                 else:
                     print "unknown mode!"
                     assert False
-        if( mode_change):
+        if ( mode_change):
             print "?MODE CHANGE :", modes[0], " -> ", modes[1]
 
     def handle_data(self, data):
         print "?DATA (",self.mode(),") ",
         if (self.mode() == "code"):
-            print "Data :", data
+            # print "Data :", data
+            if( self.comment):
+                self.code.append("! " + self.comment)
+                self.comment = ""
             self.code.append(data)
         elif (self.mode() == "body"):
-            print "Body text  :", self.normalise(data)
+            body = self.normalise(data)
+            # print "Body text  :", body
+            # self.code.append("# " + body)
             # print "Body text  :", data
-            # self.comment += ' '.join(data.translate(None,"\n\t").split())
-            self.comment.append(data)
+            self.comment += " " + ' '.join(data.translate(None,"\n\t").split())
+            # self.comment.append(data)
         elif (self.mode() == "ignore"):
             pass
             print
@@ -150,7 +160,7 @@ class MyHTMLParser(HTMLParser):
             print
         else:
             print "Mode: ", self.mode(), "Unexpected data  :", data
-            assert False
+             # assert False
 
 my_file = open(sys.argv[1], 'r')
 
@@ -167,4 +177,6 @@ parser.register("","class","statustext","ignore")
 parser.register("","class","breadcrumbs","ignore")
 parser.register("","id","toolbar","ignore")
 parser.feed(my_file.read())
+for line in parser.code:
+    print line
 parser.close()
