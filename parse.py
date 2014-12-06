@@ -1,9 +1,26 @@
 #!/usr/bin/python2.7
 from HTMLParser import HTMLParser
 
+LINE_LENGTH = 120
+DEBUG = False
+
 import sys
 
-LINE_LENGTH = 120
+class Logger(object):
+
+    def __init__(self):
+        self.device = sys.stderr
+        self.null = open("/dev/null", 'w')
+
+    def write(self, message):
+        self.device.write(message)
+
+    def off(self):
+        self.device = self.null
+
+    def on(self):
+        self.device = sys.stderr
+
 
 def attr_check(attrs,key,val):
     for (k,v) in attrs:
@@ -184,6 +201,20 @@ class MyHTMLParser(HTMLParser):
              # assert False
         print
 
+sys.stdout = Logger()
+if (DEBUG):
+    sys.stdout.on()
+else:
+    sys.stdout.off()
+
+if (len(sys.argv)<2):
+    sys.exit()
+
+if (len(sys.argv)>2):
+    output = open(sys.argv[2], 'w')
+else:
+    output = sys.stdout
+
 my_file = open(sys.argv[1], 'r')
 
 parser = MyHTMLParser()
@@ -199,6 +230,7 @@ parser.register("","class","statustext","ignore")
 parser.register("","class","breadcrumbs","ignore")
 parser.register("","id","toolbar","ignore")
 parser.feed(my_file.read())
+sys.stdout.on()
 for line in parser.output:
-    print line
+    output.write(line + '\n')
 parser.close()
