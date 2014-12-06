@@ -3,12 +3,26 @@ from HTMLParser import HTMLParser
 
 import sys
 
+LINE_LENGTH = 120
+
 def attr_check(attrs,key,val):
     for (k,v) in attrs:
         if (k==key and v==val):
             return True
     return False
 
+def _nsplit(s,n):
+    output = []
+    words = s.split()
+    while (words):
+        line = words.pop(0)
+        while (words and len(line)+len(words[0]) < n):
+            line += " " + words.pop(0)
+        output.append(line)
+    return output
+
+def nsplit(s):
+    return _nsplit(s,LINE_LENGTH)
 
 class MyHTMLParser(HTMLParser):
 
@@ -66,7 +80,11 @@ class MyHTMLParser(HTMLParser):
 
     def flush_comment(self):
         if self.comment:
-            self.output.append("!" + self.comment)
+            lines = nsplit(self.comment)
+            prefixed_lines = ["!" + line for line in lines]
+            self.output += prefixed_lines
+            # self.output += ["!" + line for line in nsplit(self.comment)]
+            # self.output.append("!" + self.comment)
             self.comment = ""
 
     def handle_starttag(self, tag, attrs):
