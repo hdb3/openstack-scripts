@@ -1,7 +1,7 @@
 #!/usr/bin/python2.7
 from HTMLParser import HTMLParser
 
-import sys,warnings
+import sys
 
 def attr_check(attrs,key,val):
     for (k,v) in attrs:
@@ -21,7 +21,8 @@ class MyHTMLParser(HTMLParser):
         self.watches ={}
         # self.mode = ["**INIT**"]
         self.comment = ""
-        self.code = []
+        self.code = ""
+        self.output = []
 
     def normalise(self,s):
         return ' '.join(s.translate(None,"\n\t").split())
@@ -58,6 +59,16 @@ class MyHTMLParser(HTMLParser):
             if (mode):
                 return (None,None,self.check(tag,"","")) 
 
+    def flush_code(self):
+        if self.code:
+            self.output.append(self.code)
+            self.code = ""
+
+    def flush_comment(self):
+        if self.comment:
+            self.output.append("!" + self.comment)
+            self.comment = ""
+
     def handle_starttag(self, tag, attrs):
         mode_change = False
         print "?STARTTAG (",self.mode(),") ",
@@ -86,7 +97,7 @@ class MyHTMLParser(HTMLParser):
                 elif (mode == "ignore"):
                     print "ignoring data"
                 elif (mode == "code"):
-                    # assert self.mode() == "body" # no nested code sections allowed
+                    # assert self.mode() == "body" # only if no nested code sections allowed
                     if ( self.mode() == "body" ): # no nested code sections allowed
                         print "warning: nested code tags!"
                 else:
@@ -94,7 +105,10 @@ class MyHTMLParser(HTMLParser):
                     assert False
             self.mode_set(mode)
         if( mode_change):
-            print "?MODE CHANGE :", modes[0], " -> ", modes[1]
+            print "?MODE CHANGE (START TAG) :", modes[0], " -> ", modes[1]
+            if (modes[1] == "code" or modes[0] == "html" ): # only flush comment text when we are starting on a code section or at the end of a doc
+                print "?FLUSH COMMENT"
+                self.flush_comment()
 
 
     def handle_endtag(self, tag):
@@ -114,53 +128,43 @@ class MyHTMLParser(HTMLParser):
             else: # there is at least one tag below us still on the stack...
                 assert mode == self.mode()
                 modes = self.mode_stack[-1],self.mode_stack[-2]
-                mode_change = (modes[0] != modes[1]) # this is a mode change transition
+                mode_change = (modes[0] != modes[1]) # is this is a mode change transition?
                 self.mode_pop()
                 if (tag == "body"):
                     print "##end of document"
-                    if( self.comment):
-                        self.code.append("! " + self.comment)
-                        self.comment = ""
-                    # do any final cleanup if needed
                 elif (mode == "ignore"):
                     print "ignoring data"
                 elif (mode == "code"):
                     print "emitting code :"
-                    # for data in self.code:
-                        # print "!!",data
                 else:
                     print "unknown mode!"
                     assert False
-        if ( mode_change):
-            print "?MODE CHANGE :", modes[0], " -> ", modes[1]
+            self.flush_code() # assume that every code-like element needs it's own line(s)
+            if ( mode_change ):
+                print "?MODE CHANGE (END TAG) :", modes[0], " -> ", modes[1]
+                if (modes[1] == "code" or modes[0] == "html" ): # only flush comment text when we are starting on a code section or at the end of a doc
+                    print "?FLUSH COMMENT"
+                    self.flush_comment()
 
     def handle_data(self, data):
-        print "?DATA (",self.mode(),") ",
-        if (self.mode() == "code"):
-            # print "Data :", data
-            if( self.comment):
-                self.code.append("! " + self.comment)
-                self.comment = ""
-            self.code.append(data)
-        elif (self.mode() == "body"):
-            body = self.normalise(data)
-            # print "Body text  :", body
-            # self.code.append("# " + body)
-            # print "Body text  :", data
+        mode = self.mode()
+        print "?DATA (",mode,") ",
+        if (mode == "code"):
+            print "Data :", data,
+            self.code += data
+        elif (mode == "body"):
             self.comment += " " + ' '.join(data.translate(None,"\n\t").split())
-            # self.comment.append(data)
-        elif (self.mode() == "ignore"):
+            print "Data :", data,
+        elif (mode == "ignore"):
             pass
-            print
-        elif (self.mode() == "html"):
+        elif (mode == "html"):
             pass
-            print
-        elif (self.mode() == "**INIT**"):
+        elif (mode == "**INIT**"):
             pass
-            print
         else:
-            print "Mode: ", self.mode(), "Unexpected data  :", data
+            print "Mode: ", mode, "Unexpected data  :", data,
              # assert False
+        print
 
 my_file = open(sys.argv[1], 'r')
 
@@ -177,6 +181,6 @@ parser.register("","class","statustext","ignore")
 parser.register("","class","breadcrumbs","ignore")
 parser.register("","id","toolbar","ignore")
 parser.feed(my_file.read())
-for line in parser.code:
+for line in parser.output:
     print line
 parser.close()
