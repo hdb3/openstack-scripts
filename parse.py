@@ -2,9 +2,8 @@
 from HTMLParser import HTMLParser
 
 LINE_LENGTH = 120
-DEBUG = False
 
-import sys
+import sys , argparse
 
 class Logger(object):
 
@@ -54,6 +53,10 @@ class MyHTMLParser(HTMLParser):
         self.comment = ""
         self.code = ""
         self.output = []
+        self.comments = False
+
+    def enable_comments(self):
+        self.comments = True
 
     def normalise(self,s):
         return ' '.join(s.translate(None,"\n\t").split())
@@ -188,7 +191,8 @@ class MyHTMLParser(HTMLParser):
             print "Data :", data,
             self.code += data
         elif (mode == "body"):
-            self.comment += " " + ' '.join(data.translate(None,"\n\t").split())
+            if (self.comments):
+                self.comment += " " + ' '.join(data.translate(None,"\n\t").split())
             print "Data :", data,
         elif (mode == "ignore"):
             pass
@@ -201,23 +205,24 @@ class MyHTMLParser(HTMLParser):
              # assert False
         print
 
+argparser = argparse.ArgumentParser(description='Parse OpenStack documentation in HTML format, to extract executable script fragments.')
+argparser.add_argument('infile', nargs='?', type=argparse.FileType('r'),  default=sys.stdin)
+argparser.add_argument('outfile', nargs='?', type=argparse.FileType('w'), default=sys.stdout)
+argparser.add_argument('-c', '--comments', action='store_false', help='Write non-code text as comments to the output' )
+argparser.add_argument('-d', '--debug', action='store_false', help='Dump parsing events to stderr' )
+args=argparser.parse_args()
+input=args.infile
+output=args.outfile
+
 sys.stdout = Logger()
-if (DEBUG):
-    sys.stdout.on()
-else:
+if (args.debug):
     sys.stdout.off()
-
-if (len(sys.argv)<2):
-    sys.exit()
-
-if (len(sys.argv)>2):
-    output = open(sys.argv[2], 'w')
 else:
-    output = sys.stdout
-
-my_file = open(sys.argv[1], 'r')
+    sys.stdout.on()
 
 parser = MyHTMLParser()
+if (not args.comments):
+    parser.enable_comments()
 parser.register("html","","","html")
 parser.register("body","","","body")
 parser.register("","class","screen","code")
@@ -229,8 +234,8 @@ parser.register("","class","navLinks","ignore")
 parser.register("","class","statustext","ignore")
 parser.register("","class","breadcrumbs","ignore")
 parser.register("","id","toolbar","ignore")
-parser.feed(my_file.read())
-sys.stdout.on()
-for line in parser.output:
-    output.write(line + '\n')
+parser.feed(input.read())
+result=parser.output
 parser.close()
+for line in result:
+    output.write(line + '\n')
