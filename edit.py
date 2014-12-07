@@ -145,11 +145,11 @@ if (delta.running_filename):
     scripts=Editor()
     scripts.parse(instring.splitlines())
     # scripts.dump()
-    edits, additions =scripts.calculate_delta(delta.fields)
-    print "Edits"
-    print edits
-    print "Additions"
-    print additions
+    edits, additions = scripts.calculate_delta(delta.fields)
+    # print "Edits"
+    # print edits
+    # print "Additions"
+    # print additions
     out_file_path = "tmp/"+delta.running_filename
     out_file_dir = os.path.dirname(out_file_path)
     if (not os.path.exists(out_file_dir)):
@@ -162,6 +162,12 @@ if (delta.running_filename):
                 outfile.write(scripts.file[mark] + "\n")
                 mark += 1
             outfile.write(delta.file[d_ln] + "\n")
+            if (delete):
+                mark += 1
         while (mark<len(scripts.file)):
             outfile.write(scripts.file[mark] + "\n")
             mark += 1
+        for section in additions.keys():
+            outfile.write("[" + section + "]\n")
+            for (name,d_ln) in additions[section]:
+                outfile.write(scripts.file[mark] + "\n")
