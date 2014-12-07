@@ -8,8 +8,9 @@ import sys , argparse
 class Logger(object):
 
     def __init__(self):
-        self.device = sys.stderr
+        self.stdout = sys.stdout
         self.null = open("/dev/null", 'w')
+        self.device = self.stdout
 
     def write(self, message):
         self.device.write(message)
@@ -18,7 +19,7 @@ class Logger(object):
         self.device = self.null
 
     def on(self):
-        self.device = sys.stderr
+        self.device = self.stdout
 
 
 def attr_check(attrs,key,val):
@@ -46,11 +47,14 @@ class MyHTMLParser(HTMLParser):
         """Initialize and reset this instance."""
         self.reset()
         self.tag_stack = []
+        self.flag_stack = []
         self.mode_stack = ["**INIT**"]
         self.unwanted_data = ""
         self.watches ={}
-        self.filenames = {}
-        # self.mode = ["**INIT**"]
+        self.flag_watches ={}
+        self.flags = set([])
+        self.filenames = set([])
+        self.replaceables = set([])
         self.comment = ""
         self.code = ""
         self.output = []
@@ -73,6 +77,25 @@ class MyHTMLParser(HTMLParser):
 
     def register(self,tag,attr,val,type):
         self.watches[tag,attr,val]=type
+
+    def flag_register(self,tag,attr,val,type):
+        self.flag_watches[tag,attr,val]=type
+
+    def flag_check(self,tag,attr,val):
+        flags=set([])
+        if (tag,attr,val) in self.flag_watches:
+            flags.add(self.flag_watches[tag,attr,val])
+        if ("",attr,val) in self.flag_watches:
+            flags.add(self.flag_watches["",attr,val])
+        if (tag,"","") in self.flag_watches:
+            flags.add(self.flag_watches[tag,"",""])
+        return flags
+
+    def flag_checks(self,tag,attrs):
+        flags = self.flag_check(tag,"","") # handle case where the tag has no attributes
+        for (k,v) in attrs:
+            flags |= self.flag_check(tag,k,v)
+        return flags
 
     def check(self,tag,attr,val):
         if (tag,attr,val) in self.watches:
@@ -111,6 +134,10 @@ class MyHTMLParser(HTMLParser):
             self.comment = ""
 
     def handle_starttag(self, tag, attrs):
+        flags = self.flag_checks(tag,attrs) # which flags are requested?
+        new_flags = flags - self.flags      # which NEW flags are being set?
+        self.flags |= new_flags             # add the flags to the global set
+        self.flag_stack.append(new_flags)   # save the list of flags added so we can remove them as we exit the tag
         mode_change = False
         print "?STARTTAG (",self.mode(),") ",
         checked = self.checks(tag,attrs)
@@ -141,8 +168,6 @@ class MyHTMLParser(HTMLParser):
                     # assert self.mode() == "body" # only if no nested code sections allowed
                     if ( self.mode() == "body" ): # no nested code sections allowed
                         print "warning: nested code tags!"
-                elif (mode == "filename"):
-                    pass
                 else:
                     print "unknown mode!"
                     assert False
@@ -155,6 +180,7 @@ class MyHTMLParser(HTMLParser):
 
 
     def handle_endtag(self, tag):
+        self.flags -= self.flag_stack.pop()
         mode_change = False
         print "?ENDTAG (",self.mode(),") ",
         checked,start_tag = self.tag_stack.pop()
@@ -179,8 +205,6 @@ class MyHTMLParser(HTMLParser):
                     print "ignoring data"
                 elif (mode == "code"):
                     print "emitting code :"
-                elif (mode == "filename"):
-                    pass
                 else:
                     print "unknown mode!"
                     assert False
@@ -192,8 +216,14 @@ class MyHTMLParser(HTMLParser):
                     self.flush_comment()
 
     def handle_data(self, data):
+        print "?DATA (",self.mode(),") {",self.flags,"}",
+
+        if ("filename" in self.flags):
+            self.filenames.add(data)
+        if ({"code_tag","replaceable"} <= self.flags):
+            self.replaceables.add(data)
+
         mode = self.mode()
-        print "?DATA (",mode,") ",
         if (mode == "code"):
             print "Data :", data,
             self.code += data
@@ -207,8 +237,6 @@ class MyHTMLParser(HTMLParser):
             pass
         elif (mode == "**INIT**"):
             pass
-        elif (mode == "filename"):
-            self.filenames[data] = None
         else:
             print "Mode: ", mode, "Unexpected data  :", data,
              # assert False
@@ -236,25 +264,34 @@ else:
 parser = MyHTMLParser()
 if (not args.comments):
     parser.enable_comments()
+
+parser.flag_register("code","class","filename","filename")
+parser.flag_register("code","","","code_tag")
+parser.flag_register("em","class","replaceable","replaceable")
+
 parser.register("html","","","html")
 parser.register("body","","","body")
 parser.register("","class","screen","code")
 parser.register("","class", "programlisting brush: bash; " ,"code")
-# parser.register("code","","","code")
-parser.register("code","class","filename","filename")
 parser.register("script","","","ignore")
 parser.register("style","","","ignore")
 parser.register("","class","navLinks","ignore")
 parser.register("","class","statustext","ignore")
 parser.register("","class","breadcrumbs","ignore")
 parser.register("","id","toolbar","ignore")
+
 parser.feed(input.read())
 result=parser.output
 parser.close()
 for line in result:
     output.write(line + '\n')
+
 sys.stdout.on()
+
 print "filenames"
 for k in iter(parser.filenames):
     print ":: ",k
 
+print "replaceables"
+for k in iter(parser.replaceables):
+    print ":: ",k
