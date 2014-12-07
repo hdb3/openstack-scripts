@@ -104,12 +104,19 @@ class Editor:
         fields.add(name)
         self.sections[section] = ln,fields
 
-editor=Editor()
-editor.parse(change_file.splitlines())
-for section,(ln,fields) in editor.sections.items():
-    print 'Section "' + section + '", at line ', ln, '" has these fields:'
-    for field in fields:
-        fln = editor.fields[(section,field)]
-        print '  Field:"'+field+'", at line ', fln
-if (editor.running_filename):
-    print "Parsing filename: ",editor.running_filename
+    def dump(self):
+        for section,(ln,fields) in self.sections.items():
+            print 'Section "' + section + '", at line ', ln, '" has these fields:'
+            for field in fields:
+                fln = self.fields[(section,field)]
+                print '  Field:"'+field+'", at line ', fln
+
+edits=Editor()
+edits.parse(change_file.splitlines())
+edits.dump()
+if (edits.running_filename):
+    print "Parsing filename: ",edits.running_filename
+    with open(edits.running_filename,'r') as infile:
+        scripts=Editor()
+        scripts.parse(infile)
+        scripts.dump()
