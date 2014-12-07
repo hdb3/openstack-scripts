@@ -44,30 +44,72 @@ verbose = True"""
 # A section dictionary stores the names of sections and the line number on which they occur
 # A field dictionary stores tuples of section-name and field-name, with the line on which they occur
 
-def parse(lines):
-    for line in lines:
-        parse_line(line)
-
-def parse_line(line):
-    if (not line):
+class Editor:
+    def __init__(self):
+        self.running_filename=""
         pass
-    else:
-        c = line[0]
-        if (c == '{'): # parse a filename
-            filename = line[1:line.index('}')].strip()
-            print "Filename: [" + filename + "]"
-        elif (c == '['): # parse a section
-            section = line[1:line.index(']')].strip()
-            print "Section: [" + section + "]"
-        elif (c == '#'): # parse a comment
-            print "Comment: ", line
-        elif (line.find('=') != -1):
-            pos = line.index('=')
-            name = line[:pos-1].strip()
-            value = line[pos+1:].strip()
-            print "Field: [" + name + "],["+ value + "]"
-    
-        else:            # parse something else...
-            print "Something else...: ["  + line + "]"
 
-parse(change_file.splitlines())
+    def parse(self,lines):
+        self.file=lines
+        self.running_section=""
+        self.fields={}
+        self.sections={}
+        self.ln=0
+        for line in lines:
+            self.parse_line(line)
+            self.ln += 1
+
+    def parse_line(self,line):
+        if (not line):
+            pass
+        else:
+            c = line[0]
+            # parse a filename
+            if (c == '{'):
+                filename = line[1:line.index('}')].strip()
+                self.running_filename=filename
+                self.do_filename()
+            # parse a section
+            elif (c == '['):
+                section = line[1:line.index(']')].strip()
+                self.running_section=section
+                self.do_section()
+            # parse a comment
+            elif (c == '#'):
+                pass
+            # parse a field
+            elif (line.find('=') != -1):
+                pos = line.index('=')
+                name = line[:pos-1].strip()
+                value = line[pos+1:].strip()
+                self.do_field(name,value)
+    
+            else:            # parse something else...
+                pass
+                # print "Something else...: ["  + line + "]"
+
+    def do_filename(self):
+        pass
+
+    def do_section(self):
+        section=self.running_section
+        # assert self.running_section not in self.sections # in a change file this may not be a valid assumption!
+        self.sections[section] = (self.ln,set([]))
+
+    def do_field(self,name,value):
+        section=self.running_section
+        assert (section,name) not in self.fields
+        self.fields[(section,name)] = self.ln
+        (ln,fields) = self.sections[section]
+        fields.add(name)
+        self.sections[section] = ln,fields
+
+editor=Editor()
+editor.parse(change_file.splitlines())
+for section,(ln,fields) in editor.sections.items():
+    print 'Section "' + section + '", at line ', ln, '" has these fields:'
+    for field in fields:
+        fln = editor.fields[(section,field)]
+        print '  Field:"'+field+'", at line ', fln
+if (editor.running_filename):
+    print "Parsing filename: ",editor.running_filename
