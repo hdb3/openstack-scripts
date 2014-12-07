@@ -60,6 +60,7 @@ class MyHTMLParser(HTMLParser):
         self.code = ""
         self.output = []
         self.comments = False
+        self.linebreak_tags = set(["p","h1","h2"])
 
     def enable_comments(self):
         self.comments = True
@@ -135,7 +136,7 @@ class MyHTMLParser(HTMLParser):
     def flush_comment(self):
         if self.comment:
             lines = nsplit(self.comment)
-            prefixed_lines = ["!" + line for line in lines]
+            prefixed_lines = ["! " + line.strip() for line in lines]
             self.output += prefixed_lines
             # self.output += ["!" + line for line in nsplit(self.comment)]
             # self.output.append("!" + self.comment)
@@ -197,8 +198,9 @@ class MyHTMLParser(HTMLParser):
         checked,start_tag = self.tag_stack.pop()
         if (not checked):
             print "Unregistered end tag :", tag
-            if (self.mode() == "body" and self.comment and tag == "p"):
-                self.comment += "\n! "
+            # if (self.mode() == "body" and self.comment and tag == "p"):
+            if (self.mode() == "body" and self.comment and tag in self.linebreak_tags):
+                self.flush_comment()
         else:
             k,v,mode=checked
             print "Registered end tag (current mode == ", self.mode(),", tag mode ==", mode , "):", tag,k,v,
@@ -238,6 +240,8 @@ class MyHTMLParser(HTMLParser):
         mode = self.mode()
         if (mode == "code"):
             print "Data :", data,
+            if ( self.annotate_replaceable and "replaceable" in self.flags):
+                self.code += '$'
             self.code += data
         elif (mode == "body"):
             if (self.comments):
@@ -257,11 +261,19 @@ class MyHTMLParser(HTMLParser):
 argparser = argparse.ArgumentParser(description='Parse OpenStack documentation in HTML format, to extract executable script fragments.')
 argparser.add_argument('infile', nargs='?', type=argparse.FileType('r'),  default=sys.stdin)
 argparser.add_argument('outfile', nargs='?', type=argparse.FileType('w'), default=sys.stdout)
-argparser.add_argument('-c', '--comments', action='store_false', help='Write non-code text as comments to the output' )
-argparser.add_argument('-d', '--debug', action='store_false', help='Dump parsing events to stderr' )
+argparser.add_argument('-c', '--comments', action='store_true', help='Write non-code text as comments to the output' )
+argparser.add_argument('-r', '--replaceable', action='store_true', help='Annotate replaceable tokens in code with a leading"$"' )
+argparser.add_argument('-d', '--debug', action='store_true', help='Dump parsing events to stderr' )
 args=argparser.parse_args()
 input=args.infile
 output=args.outfile
+
+parser = MyHTMLParser()
+
+if (args.comments):
+    parser.enable_comments()
+
+parser.annotate_replaceable=args.replaceable
 
 if (input.isatty()):
     sys.stderr.write("No input file specified and input is not a pipe!\n")
@@ -269,13 +281,9 @@ if (input.isatty()):
 
 sys.stdout = Logger()
 if (args.debug):
-    sys.stdout.off()
-else:
     sys.stdout.on()
-
-parser = MyHTMLParser()
-if (not args.comments):
-    parser.enable_comments()
+else:
+    sys.stdout.off()
 
 parser.flag_register("code","class","filename","filename")
 parser.flag_register("code","","","code_tag")
