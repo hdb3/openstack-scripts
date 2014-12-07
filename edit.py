@@ -1,4 +1,5 @@
 
+import os.path, os
 # edit.py
 # applies changes to configuration files
 # input is a list of lines which would be valid content
@@ -111,28 +112,56 @@ class Editor:
                 fln = self.fields[(section,field)]
                 print '  Field:"'+field+'", at line ', fln
 
-    def apply_delta(self,deltas):
+    def calculate_delta(self,deltas):
+        edits=[]
+        additions={}
         for ((section,name),d_ln) in deltas.items():
             if ((section,name) in self.fields):
                 line = self.fields[(section,name)]
                 print "Found matching entries in original and delta for section ", section, " field ",name
                 print "Replacing existing line number ", line, " with change line ", d_ln
+                edits.append((section,name,line,d_ln,True))
             elif(section in self.sections):
                 line,fields = self.sections[section]
                 print "Found new line for existing section, section ", section , " is defined at line ", line
                 print "New field: " , name, " is defined at line", d_ln
+                edits.append((section,name,line,d_ln,False))
             else:
                 print "New section ", section, " is required"
                 print "the new field was defined at ", d_ln
+                update = (name,d_ln)
+                additions[section] = [update] if section not in additions else additions[section].append(update) 
+        edits.sort(key=lambda update: update[2])
+        return (edits,additions)
 
 
-edits=Editor()
-edits.parse(change_file.splitlines())
-edits.dump()
-if (edits.running_filename):
-    print "Parsing filename: ",edits.running_filename
-    with open(edits.running_filename,'r') as infile:
-        scripts=Editor()
-        scripts.parse(infile)
-        # scripts.dump()
-        scripts.apply_delta(edits.fields)
+delta=Editor()
+delta.parse(change_file.splitlines())
+# delta.dump()
+if (delta.running_filename):
+    print "Parsing filename: ",delta.running_filename
+    infile= open(delta.running_filename,'r')
+    instring=infile.read()
+    scripts=Editor()
+    scripts.parse(instring.splitlines())
+    # scripts.dump()
+    edits, additions =scripts.calculate_delta(delta.fields)
+    print "Edits"
+    print edits
+    print "Additions"
+    print additions
+    out_file_path = "tmp/"+delta.running_filename
+    out_file_dir = os.path.dirname(out_file_path)
+    if (not os.path.exists(out_file_dir)):
+        # create the tmp directories
+        os.makedirs(out_file_dir)
+    with open(out_file_path,'w') as outfile:
+        mark=0
+        for section,name,line,d_ln,delete in edits:
+            while (mark<line):
+                outfile.write(scripts.file[mark] + "\n")
+                mark += 1
+            outfile.write(delta.file[d_ln] + "\n")
+        while (mark<len(scripts.file)):
+            outfile.write(scripts.file[mark] + "\n")
+            mark += 1
