@@ -1,6 +1,6 @@
 #!/usr/bin/python2.7
 
-import os.path, os
+import os.path, os, argparse,sys
 # edit.py
 # applies changes to configuration files
 # input is a list of lines which would be valid content
@@ -8,23 +8,6 @@ import os.path, os
 # this involves locating sections within the file, or creating them if not exists
 # and inserting fields within sections, replacing existing fields with the same name
 # the file should be left otherwise intact
-# example change file is:
-change_file = """{keystone/keystone.conf}
-[DEFAULT]
-...
-admin_token = $ADMIN_TOKEN
-[database]
-...
-connection = mysql://keystone:$KEYSTONE_DBPASS@$controller/keystone
-[token]
-...
-provider = keystone.token.providers.uuid.Provider
-driver = keystone.token.persistence.backends.sql.Token
-[RANDOM]
-...
-verbose = True"""
-
-# and a sample existing file is in the location mentioned in the first line
 #
 # The first action is to read the file and make a backup copy in the file-system
 # then, scan the changes
@@ -128,44 +111,64 @@ class Editor:
             else:
                 print "Inserting new entry for", name, "in new section [" + section + "]"
                 update = (name,d_ln)
-                additions[section] = [update] if section not in additions else additions[section].append(update) 
+                if (section not in additions):
+                    additions[section] = [update]
+                else:
+                     additions[section].append(update)
         edits.sort(key=lambda update: update[2])
         return (edits,additions)
 
-
-delta=Editor()
-delta.parse(change_file.splitlines())
-# delta.dump()
-if (delta.running_filename):
-    print "Parsing filename: ",delta.running_filename
-    infile= open(delta.running_filename,'r')
-    instring=infile.read()
-    scripts=Editor()
-    scripts.parse(instring.splitlines())
-    # scripts.dump()
-    edits, additions = scripts.calculate_delta(delta.fields)
-    # print "Edits"
-    # print edits
-    # print "Additions"
-    # print additions
-    out_file_path = "tmp/"+delta.running_filename
-    out_file_dir = os.path.dirname(out_file_path)
-    if (not os.path.exists(out_file_dir)):
-        # create the tmp directories
-        os.makedirs(out_file_dir)
-    with open(out_file_path,'w') as outfile:
-        mark=0
-        for section,name,line,d_ln,delete in edits:
-            while (mark<line):
+def execute(input):
+    delta=Editor()
+    delta.parse(input.splitlines())
+    # delta.dump()
+    if (delta.running_filename):
+        print "Parsing filename: ",delta.running_filename
+        infile= open(delta.running_filename,'r')
+        instring=infile.read()
+        scripts=Editor()
+        scripts.parse(instring.splitlines())
+        # scripts.dump()
+        edits, additions = scripts.calculate_delta(delta.fields)
+        out_file_path = "tmp/"+delta.running_filename
+        out_file_dir = os.path.dirname(out_file_path)
+        if (not os.path.exists(out_file_dir)):
+            # create the tmp directories
+            os.makedirs(out_file_dir)
+        with open(out_file_path,'w') as outfile:
+            mark=0
+            for section,name,line,d_ln,delete in edits:
+                while (mark<line):
+                    outfile.write(scripts.file[mark] + "\n")
+                    mark += 1
+                outfile.write(delta.file[d_ln] + "\n")
+                if (delete):
+                    mark += 1
+            while (mark<len(scripts.file)):
                 outfile.write(scripts.file[mark] + "\n")
                 mark += 1
-            outfile.write(delta.file[d_ln] + "\n")
-            if (delete):
-                mark += 1
-        while (mark<len(scripts.file)):
-            outfile.write(scripts.file[mark] + "\n")
-            mark += 1
-        for section in additions.keys():
-            outfile.write("[" + section + "]\n")
-            for (name,d_ln) in additions[section]:
-                outfile.write(delta.file[d_ln] + "\n")
+            for section in additions.keys():
+                outfile.write("[" + section + "]\n")
+                for (name,d_ln) in additions[section]:
+                    outfile.write(delta.file[d_ln] + "\n")
+    
+
+argparser = argparse.ArgumentParser(description='Execute configuration edit scripts.')
+argparser.add_argument('infile', nargs='?', type=argparse.FileType('r'),  default=sys.stdin)
+argparser.add_argument('outfile', nargs='?', type=argparse.FileType('w'), default=sys.stdout)
+argparser.add_argument('-s', '--substitute', action='store_true', help='random option' )
+args=argparser.parse_args()
+input=args.infile
+output=args.outfile
+
+if (args.substitute):
+    pass
+
+if (input.isatty()):
+    sys.stderr.write("No input file specified and input is not a pipe!\n")
+    sys.exit()
+
+result = execute(input.read())
+if (result):
+    for line in result:
+        output.write(line + '\n')
