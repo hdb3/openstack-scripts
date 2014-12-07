@@ -111,6 +111,21 @@ class Editor:
                 fln = self.fields[(section,field)]
                 print '  Field:"'+field+'", at line ', fln
 
+    def apply_delta(self,deltas):
+        for ((section,name),d_ln) in deltas.items():
+            if ((section,name) in self.fields):
+                line = self.fields[(section,name)]
+                print "Found matching entries in original and delta for section ", section, " field ",name
+                print "Replacing existing line number ", line, " with change line ", d_ln
+            elif(section in self.sections):
+                line,fields = self.sections[section]
+                print "Found new line for existing section, section ", section , " is defined at line ", line
+                print "New field: " , name, " is defined at line", d_ln
+            else:
+                print "New section ", section, " is required"
+                print "the new field was defined at ", d_ln
+
+
 edits=Editor()
 edits.parse(change_file.splitlines())
 edits.dump()
@@ -119,4 +134,5 @@ if (edits.running_filename):
     with open(edits.running_filename,'r') as infile:
         scripts=Editor()
         scripts.parse(infile)
-        scripts.dump()
+        # scripts.dump()
+        scripts.apply_delta(edits.fields)
