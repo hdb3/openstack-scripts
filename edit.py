@@ -19,7 +19,7 @@ connection = mysql://keystone:$KEYSTONE_DBPASS@$controller/keystone
 ...
 provider = keystone.token.providers.uuid.Provider
 driver = keystone.token.persistence.backends.sql.Token
-[DEFAULT]
+[RANDOM]
 ...
 verbose = True"""
 
@@ -81,7 +81,7 @@ class Editor:
             # parse a field
             elif (line.find('=') != -1):
                 pos = line.index('=')
-                name = line[:pos-1].strip()
+                name = line[:pos].strip()
                 value = line[pos+1:].strip()
                 self.do_field(name,value)
     
@@ -118,17 +118,14 @@ class Editor:
         for ((section,name),d_ln) in deltas.items():
             if ((section,name) in self.fields):
                 line = self.fields[(section,name)]
-                print "Found matching entries in original and delta for section ", section, " field ",name
-                print "Replacing existing line number ", line, " with change line ", d_ln
+                print "Replacing entry for", name, "in section [" + section + "]"
                 edits.append((section,name,line,d_ln,True))
             elif(section in self.sections):
                 line,fields = self.sections[section]
-                print "Found new line for existing section, section ", section , " is defined at line ", line
-                print "New field: " , name, " is defined at line", d_ln
+                print "Inserting new entry for", name, "in section [" + section + "]"
                 edits.append((section,name,line,d_ln,False))
             else:
-                print "New section ", section, " is required"
-                print "the new field was defined at ", d_ln
+                print "Inserting new entry for", name, "in new section [" + section + "]"
                 update = (name,d_ln)
                 additions[section] = [update] if section not in additions else additions[section].append(update) 
         edits.sort(key=lambda update: update[2])
@@ -170,4 +167,4 @@ if (delta.running_filename):
         for section in additions.keys():
             outfile.write("[" + section + "]\n")
             for (name,d_ln) in additions[section]:
-                outfile.write(scripts.file[mark] + "\n")
+                outfile.write(delta.file[d_ln] + "\n")
