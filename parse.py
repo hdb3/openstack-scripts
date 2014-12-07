@@ -54,6 +54,7 @@ class MyHTMLParser(HTMLParser):
         self.flag_watches ={}
         self.flags = set([])
         self.filenames = set([])
+        self.running_filename=""
         self.replaceables = set([])
         self.comment = ""
         self.code = ""
@@ -139,6 +140,9 @@ class MyHTMLParser(HTMLParser):
             # self.output += ["!" + line for line in nsplit(self.comment)]
             # self.output.append("!" + self.comment)
             self.comment = ""
+        if (self.running_filename):
+            self.output.append( "{" + self.running_filename + "}" )
+            self.running_filename = ""
 
     def handle_starttag(self, tag, attrs):
         flags = self.flag_checks(tag,attrs) # which flags are requested?
@@ -227,6 +231,7 @@ class MyHTMLParser(HTMLParser):
 
         if ("filename" in self.flags):
             self.filenames.add(data)
+            self.running_filename=data
         if ({"code_tag","replaceable"} <= self.flags):
             self.replaceables.add(data)
 
