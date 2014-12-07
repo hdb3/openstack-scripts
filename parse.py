@@ -118,10 +118,17 @@ class MyHTMLParser(HTMLParser):
                 return (None,None,self.check(tag,"","")) 
 
     def flush_code(self):
+        def not_sql(s):
+            if (not s):
+                return True
+            return (s[0] != '|' and s[0] != '+')
         if self.code:
             # self.output.append(self.code)
             munged_code=self.code.replace("\\\n","")
-            self.output.append(munged_code)
+            lines = munged_code.splitlines()
+            codelines = filter(not_sql,lines)
+            self.output += codelines
+            # self.output.append(munged_code)
             self.code = ""
 
     def flush_comment(self):
