@@ -61,6 +61,8 @@ class MyHTMLParser(HTMLParser):
         self.output = []
         self.comments = False
         self.linebreak_tags = set(["p","h1","h2"])
+        self.substitute = False
+        self.substitutions = {}
 
     def enable_comments(self):
         self.comments = True
@@ -229,20 +231,23 @@ class MyHTMLParser(HTMLParser):
                     self.flush_comment()
 
     def handle_data(self, data):
-        print "?DATA (",self.mode(),") {",self.flags,"}",
+        mode = self.mode()
+        print "?DATA (",mode,") {",self.flags,"}",
 
         if ("filename" in self.flags):
             self.filenames.add(data)
             self.running_filename=data
-        if ({"code_tag","replaceable"} <= self.flags):
+        if ( mode == "code" and {"code_tag","replaceable"} <= self.flags):
             self.replaceables.add(data)
 
-        mode = self.mode()
         if (mode == "code"):
             print "Data :", data,
             if ( self.annotate_replaceable and "replaceable" in self.flags):
                 self.code += '$'
-            self.code += data
+            if (self.substitute and "replaceable" in self.flags and data in self.substitutions):
+                self.code += self.substitutions[data]
+            else:
+                self.code += data
         elif (mode == "body"):
             if (self.comments):
                 self.comment += " " + ' '.join(data.translate(None,"\n\t").split())
@@ -263,12 +268,28 @@ argparser.add_argument('infile', nargs='?', type=argparse.FileType('r'),  defaul
 argparser.add_argument('outfile', nargs='?', type=argparse.FileType('w'), default=sys.stdout)
 argparser.add_argument('-c', '--comments', action='store_true', help='Write non-code text as comments to the output' )
 argparser.add_argument('-r', '--replaceable', action='store_true', help='Annotate replaceable tokens in code with a leading"$"' )
+argparser.add_argument('-s', '--substitute', action='store_true', help='read a list of substitutions from replaceables.txt' )
 argparser.add_argument('-d', '--debug', action='store_true', help='Dump parsing events to stderr' )
 args=argparser.parse_args()
 input=args.infile
 output=args.outfile
 
 parser = MyHTMLParser()
+
+if (args.substitute):
+    parser.substitute = True
+    repfile = open("replaceables.txt",'r')
+    repstring = repfile.read()
+    replist = repstring.splitlines()
+    for rep in replist:
+        if (rep.find('=') != -1):
+            pos = rep.index('=')
+            key = rep[:pos].strip()
+            value = rep[pos+1:].strip()
+            parser.substitutions[key] = value
+
+if (parser.substitutions):
+    print "using the following substitution table:", parser.substitutions
 
 if (args.comments):
     parser.enable_comments()
@@ -314,4 +335,7 @@ for k in iter(parser.filenames):
 
 print "replaceables"
 for k in iter(parser.replaceables):
-    print ":: ",k
+    if (k in parser.substitutions):
+        print ":: ",k, "==>", parser.substitutions[k]
+    else:
+        print ":: ",k
