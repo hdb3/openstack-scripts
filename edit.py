@@ -34,6 +34,7 @@ class Editor:
         self.mode=mode
         self.success = []
         self.fail = []
+        self.filenames = set([])
         pass
 
     def reset(self):
@@ -49,7 +50,6 @@ class Editor:
         for line in lines:
             self.parse_line(line)
             self.ln += 1
-        self.do_filename("") # process last, possibly only, script file mentioned in the delta
 
     def parse_line(self,line):
         if (not line):
@@ -80,30 +80,31 @@ class Editor:
                 # print "Something else...: ["  + line + "]"
 
     def do_filename(self,filename):
-        if ( self.running_filename ):
-            self.process_script()
+        assert self.mode == "delta"
         self.running_filename=filename
+        self.running_section=""
+        self.filenames.add(filename)
 
-    def process_script(self):
+    def process_script(self,filename):
         assert self.mode == "delta"
         scripts=Editor("script")
-        print "Processing filename: ",self.running_filename
+        print "Processing filename: ",filename
         try:
-            infile= open(self.running_filename,'r')
+            infile= open(filename,'r')
             instring=infile.read()
             infile.close()
             scripts.parse(instring.splitlines())
             # scripts.dump()
-            edits, additions = scripts.calculate_delta(self.fields)
+            edits, additions = scripts.calculate_delta(filename,self.fields)
             if (edits or additions):
                 if(write_direct):
                     n=0
-                    while (os.path.exists(self.running_filename + "." + str(n))):
+                    while (os.path.exists(filename + "." + str(n))):
                         n += 1
-                    os.rename(self.running_filename,self.running_filename + "." + str(n))
-                    out_file_path = self.running_filename
+                    os.rename(filename,filename + "." + str(n))
+                    out_file_path = filename
                 else:
-                    out_file_path = "tmp/"+self.running_filename
+                    out_file_path = "tmp/"+filename
                     out_file_dir = os.path.dirname(out_file_path)
                     if (not os.path.exists(out_file_dir)):
                         # create the tmp directories
@@ -126,43 +127,50 @@ class Editor:
                         for (name,d_ln) in additions[section]:
                             outfile.write(self.file[d_ln] + "\n")
                 if (verbose):
-                    print "Finished processing filename: ",self.running_filename
-                self.success.append(self.running_filename)
+                    print "Finished processing filename: ",filename
+                self.success.append(filename)
         except IOError as e:
             if (verbose):
-                print "**** Failed processing filename: ",self.running_filename
+                print "**** Failed processing filename: ",filename
                 print "**** I/O error({0}): {1}".format(e.errno, e.strerror)
-            self.fail.append(self.running_filename)
-        self.reset()
+            self.fail.append(filename)
 
 
     def do_section(self):
         section=self.running_section
+        file=self.running_filename
         # assert self.running_section not in self.sections # in a change file this may not be a valid assumption!
-        self.sections[section] = (self.ln,set([]))
+        # print "<do_section> File: ",file,"Section: ",section
+        self.sections[file,section] = (self.ln,set([]))
 
     def do_field(self,name,value):
         section=self.running_section
-        if (not section and section not in self.sections): # cope when a field occurs before any sections
+        file=self.running_filename
+        # print "<do_field> File: ",file,"Section: ",section,"Field: ",name
+        if (not section and (file,section) not in self.sections): # cope when a field occurs before any sections
             self.do_section()
-        if ( (section,name) not in self.fields ):
-            warnings.warn("section,name) not in self.fields")
-        self.fields[(section,name)] = self.ln
-        (ln,fields) = self.sections[section]
+        # if ( (file,section,name) not in self.fields ):
+            # warnings.warn("file,section,name) not in self.fields (" + file + "|" + section + "|" + name + ")")
+        self.fields[(file,section,name)] = self.ln
+        (ln,fields) = self.sections[file,section]
         fields.add(name)
-        self.sections[section] = ln,fields
+        self.sections[file,section] = ln,fields
 
     def dump(self):
-        for section,(ln,fields) in self.sections.items():
+        for (file,section),(ln,fields) in self.sections.items():
             print 'Section "' + section + '", at line ', ln, '" has these fields:'
             for field in fields:
-                fln = self.fields[(section,field)]
+                fln = self.fields[(file,section,field)]
                 print '  Field:"'+field+'", at line ', fln
 
-    def calculate_delta(self,deltas):
+    def calculate_delta(self,filename,deltas):
         edits=[]
         additions={}
-        for ((section,name),d_ln) in deltas.items():
+        if (verbose):
+            print "  Calculating deltas for ", filename
+        for ((file,section,name),d_ln) in deltas.items():
+            if (filename != file):
+                break
             if ((section,name) in self.fields):
                 line = self.fields[(section,name)]
                 if (verbose):
@@ -182,16 +190,14 @@ class Editor:
                 else:
                      additions[section].append(update)
         edits.sort(key=lambda update: update[2])
+        if (verbose):
+            print "  Calculating deltas for ", filename
         return (edits,additions)
 
     def execute(self,input):
         self.parse(input.splitlines())
-        # if (self.success):
-            # result = ("Success: " + line for line in self.success)
-        # else:
-            # result = []
-        # if (self.fail):
-            # result += ("Fail   : " + line for line in self.fail)
+        for filename in self.filenames:
+            self.process_script(filename)
         return ["Success: " + line for line in self.success] + ["Fail   : " + line for line in self.fail]
         # self.dump()
 
