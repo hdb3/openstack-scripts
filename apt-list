@@ -1,4 +1,4 @@
 apt-get install ubuntu-cloud-keyring
-echo "deb http://ubuntu-cloud.archive.canonical.com/ubuntu"   "trusty-updates/juno main" >  /etc/apt/sources.list.d/cloudarchive-juno.listapt-get install ubuntu-cloud-keyring
+echo "deb http://ubuntu-cloud.archive.canonical.com/ubuntu"   "trusty-updates/juno main" >  /etc/apt/sources.list.d/cloudarchive-juno.list
 apt-get update  apt-get dist-upgrade
 apt-get install mariadb-server python-mysqldb ntp rabbitmq-server keystone python-keystoneclient glance python-glanceclient nova-api nova-cert nova-conductor nova-consoleauth   nova-novncproxy nova-scheduler python-novaclient nova-compute sysfsutils neutron-server neutron-plugin-ml2 python-neutronclient openstack-dashboard apache2 libapache2-mod-wsgi memcached python-memcache cinder-api cinder-scheduler python-cinderclient lvm2 cinder-volume python-mysqldb heat-api heat-api-cfn heat-engine python-heatclient mongodb-server ceilometer-api ceilometer-collector ceilometer-agent-central   ceilometer-agent-notification ceilometer-alarm-evaluator ceilometer-alarm-notifier   python-ceilometerclient ceilometer-agent-compute python-ceilometerclient
