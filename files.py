@@ -30,9 +30,9 @@ def execute (data):
             start_line = line
         elif (show):
             if (start_line):
-                print start_line
+                output.write(start_line + "\n")
                 start_line = ""
-            print line
+            output.write(line + "\n")
         else:
             pass
 

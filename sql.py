@@ -22,7 +22,7 @@ def execute (data):
         elif (not line or not line[0].isalpha()):
             show=False
         elif (show):
-            print line
+            output.write(line + "\n")
         else:
             pass
 
