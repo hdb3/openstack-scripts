@@ -1,6 +1,6 @@
 #!/usr/bin/python2.7
 
-import os.path, os, argparse,sys
+import os.path, os, argparse,sys, warnings
 # edit.py
 # applies changes to configuration files
 # input is a list of lines which would be valid content
@@ -30,19 +30,24 @@ import os.path, os, argparse,sys
 # A field dictionary stores tuples of section-name and field-name, with the line on which they occur
 
 class Editor:
-    def __init__(self):
-        self.running_filename=""
+    def __init__(self,mode):
+        self.mode=mode
         pass
 
-    def parse(self,lines):
-        self.file=lines
+    def reset(self):
         self.running_section=""
         self.fields={}
         self.sections={}
+        self.running_filename=""
+
+    def parse(self,lines):
+        self.reset()
+        self.file=lines
         self.ln=0
         for line in lines:
             self.parse_line(line)
             self.ln += 1
+        self.do_filename("") # process last, possibly only, script file mentioned in the delta
 
     def parse_line(self,line):
         if (not line):
@@ -52,8 +57,7 @@ class Editor:
             # parse a filename
             if (c == '{'):
                 filename = line[1:line.index('}')].strip()
-                self.running_filename=filename
-                self.do_filename()
+                self.do_filename(filename)
             # parse a section
             elif (c == '['):
                 section = line[1:line.index(']')].strip()
@@ -73,8 +77,48 @@ class Editor:
                 pass
                 # print "Something else...: ["  + line + "]"
 
-    def do_filename(self):
-        pass
+    def do_filename(self,filename):
+        if ( self.running_filename ):
+            self.process_script()
+        self.running_filename=filename
+
+    def process_script(self):
+        assert self.mode == "delta"
+        scripts=Editor("script")
+        print "Processing filename: ",self.running_filename
+        try:
+            infile= open(self.running_filename,'r')
+            instring=infile.read()
+            scripts.parse(instring.splitlines())
+            # scripts.dump()
+            edits, additions = scripts.calculate_delta(self.fields)
+            out_file_path = "tmp/"+self.running_filename
+            out_file_dir = os.path.dirname(out_file_path)
+            if (not os.path.exists(out_file_dir)):
+                # create the tmp directories
+                os.makedirs(out_file_dir)
+            with open(out_file_path,'w') as outfile:
+                mark=0
+                for section,name,line,d_ln,delete in edits:
+                    while (mark<line):
+                        outfile.write(scripts.file[mark] + "\n")
+                        mark += 1
+                    outfile.write(self.file[d_ln] + "\n")
+                    if (delete):
+                        mark += 1
+                while (mark<len(scripts.file)):
+                    outfile.write(scripts.file[mark] + "\n")
+                    mark += 1
+                for section in additions.keys():
+                    outfile.write("[" + section + "]\n")
+                    for (name,d_ln) in additions[section]:
+                        outfile.write(self.file[d_ln] + "\n")
+            print "Finished processing filename: ",self.running_filename
+        except IOError as e:
+            print "**** Failed processing filename: ",self.running_filename
+            print "**** I/O error({0}): {1}".format(e.errno, e.strerror)
+        self.reset()
+
 
     def do_section(self):
         section=self.running_section
@@ -83,7 +127,10 @@ class Editor:
 
     def do_field(self,name,value):
         section=self.running_section
-        assert (section,name) not in self.fields
+        if (not section and section not in self.sections): # cope when a field occurs before any sections
+            self.do_section()
+        if ( (section,name) not in self.fields ):
+            warnings.warn("section,name) not in self.fields")
         self.fields[(section,name)] = self.ln
         (ln,fields) = self.sections[section]
         fields.add(name)
@@ -102,14 +149,14 @@ class Editor:
         for ((section,name),d_ln) in deltas.items():
             if ((section,name) in self.fields):
                 line = self.fields[(section,name)]
-                print "Replacing entry for", name, "in section [" + section + "]"
+                print "  Replacing entry for", name, "in section [" + section + "]"
                 edits.append((section,name,line,d_ln,True))
             elif(section in self.sections):
                 line,fields = self.sections[section]
-                print "Inserting new entry for", name, "in section [" + section + "]"
+                print "  Inserting new entry for", name, "in section [" + section + "]"
                 edits.append((section,name,line,d_ln,False))
             else:
-                print "Inserting new entry for", name, "in new section [" + section + "]"
+                print "  Inserting new entry for", name, "in new section [" + section + "]"
                 update = (name,d_ln)
                 if (section not in additions):
                     additions[section] = [update]
@@ -118,40 +165,9 @@ class Editor:
         edits.sort(key=lambda update: update[2])
         return (edits,additions)
 
-def execute(input):
-    delta=Editor()
-    delta.parse(input.splitlines())
-    # delta.dump()
-    if (delta.running_filename):
-        print "Parsing filename: ",delta.running_filename
-        infile= open(delta.running_filename,'r')
-        instring=infile.read()
-        scripts=Editor()
-        scripts.parse(instring.splitlines())
-        # scripts.dump()
-        edits, additions = scripts.calculate_delta(delta.fields)
-        out_file_path = "tmp/"+delta.running_filename
-        out_file_dir = os.path.dirname(out_file_path)
-        if (not os.path.exists(out_file_dir)):
-            # create the tmp directories
-            os.makedirs(out_file_dir)
-        with open(out_file_path,'w') as outfile:
-            mark=0
-            for section,name,line,d_ln,delete in edits:
-                while (mark<line):
-                    outfile.write(scripts.file[mark] + "\n")
-                    mark += 1
-                outfile.write(delta.file[d_ln] + "\n")
-                if (delete):
-                    mark += 1
-            while (mark<len(scripts.file)):
-                outfile.write(scripts.file[mark] + "\n")
-                mark += 1
-            for section in additions.keys():
-                outfile.write("[" + section + "]\n")
-                for (name,d_ln) in additions[section]:
-                    outfile.write(delta.file[d_ln] + "\n")
-    
+    def execute(self,input):
+        self.parse(input.splitlines())
+        # self.dump()
 
 argparser = argparse.ArgumentParser(description='Execute configuration edit scripts.')
 argparser.add_argument('infile', nargs='?', type=argparse.FileType('r'),  default=sys.stdin)
@@ -168,7 +184,8 @@ if (input.isatty()):
     sys.stderr.write("No input file specified and input is not a pipe!\n")
     sys.exit()
 
-result = execute(input.read())
+delta=Editor("delta")
+result = delta.execute(input.read())
 if (result):
     for line in result:
         output.write(line + '\n')
