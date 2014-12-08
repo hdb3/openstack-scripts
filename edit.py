@@ -32,6 +32,8 @@ import os.path, os, argparse,sys, warnings
 class Editor:
     def __init__(self,mode):
         self.mode=mode
+        self.success = []
+        self.fail = []
         pass
 
     def reset(self):
@@ -113,10 +115,14 @@ class Editor:
                     outfile.write("[" + section + "]\n")
                     for (name,d_ln) in additions[section]:
                         outfile.write(self.file[d_ln] + "\n")
-            print "Finished processing filename: ",self.running_filename
+            if (verbose):
+                print "Finished processing filename: ",self.running_filename
+            self.success.append(self.running_filename)
         except IOError as e:
-            print "**** Failed processing filename: ",self.running_filename
-            print "**** I/O error({0}): {1}".format(e.errno, e.strerror)
+            if (verbose):
+                print "**** Failed processing filename: ",self.running_filename
+                print "**** I/O error({0}): {1}".format(e.errno, e.strerror)
+            self.fail.append(self.running_filename)
         self.reset()
 
 
@@ -149,14 +155,17 @@ class Editor:
         for ((section,name),d_ln) in deltas.items():
             if ((section,name) in self.fields):
                 line = self.fields[(section,name)]
-                print "  Replacing entry for", name, "in section [" + section + "]"
+                if (verbose):
+                    print "  Replacing entry for", name, "in section [" + section + "]"
                 edits.append((section,name,line,d_ln,True))
             elif(section in self.sections):
                 line,fields = self.sections[section]
-                print "  Inserting new entry for", name, "in section [" + section + "]"
+                if (verbose):
+                    print "  Inserting new entry for", name, "in section [" + section + "]"
                 edits.append((section,name,line,d_ln,False))
             else:
-                print "  Inserting new entry for", name, "in new section [" + section + "]"
+                if (verbose):
+                    print "  Inserting new entry for", name, "in new section [" + section + "]"
                 update = (name,d_ln)
                 if (section not in additions):
                     additions[section] = [update]
@@ -167,18 +176,23 @@ class Editor:
 
     def execute(self,input):
         self.parse(input.splitlines())
+        # if (self.success):
+            # result = ("Success: " + line for line in self.success)
+        # else:
+            # result = []
+        # if (self.fail):
+            # result += ("Fail   : " + line for line in self.fail)
+        return ["Success: " + line for line in self.success] + ["Fail   : " + line for line in self.fail]
         # self.dump()
 
 argparser = argparse.ArgumentParser(description='Execute configuration edit scripts.')
 argparser.add_argument('infile', nargs='?', type=argparse.FileType('r'),  default=sys.stdin)
 argparser.add_argument('outfile', nargs='?', type=argparse.FileType('w'), default=sys.stdout)
-argparser.add_argument('-s', '--substitute', action='store_true', help='random option' )
+argparser.add_argument('-v', '--verbose', action='store_true')
 args=argparser.parse_args()
 input=args.infile
 output=args.outfile
-
-if (args.substitute):
-    pass
+verbose=args.verbose
 
 if (input.isatty()):
     sys.stderr.write("No input file specified and input is not a pipe!\n")
