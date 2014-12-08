@@ -91,33 +91,42 @@ class Editor:
         try:
             infile= open(self.running_filename,'r')
             instring=infile.read()
+            infile.close()
             scripts.parse(instring.splitlines())
             # scripts.dump()
             edits, additions = scripts.calculate_delta(self.fields)
-            out_file_path = "tmp/"+self.running_filename
-            out_file_dir = os.path.dirname(out_file_path)
-            if (not os.path.exists(out_file_dir)):
-                # create the tmp directories
-                os.makedirs(out_file_dir)
-            with open(out_file_path,'w') as outfile:
-                mark=0
-                for section,name,line,d_ln,delete in edits:
-                    while (mark<line):
+            if (edits or additions):
+                if(write_direct):
+                    n=0
+                    while (os.path.exists(self.running_filename + "." + str(n))):
+                        n += 1
+                    os.rename(self.running_filename,self.running_filename + "." + str(n))
+                    out_file_path = self.running_filename
+                else:
+                    out_file_path = "tmp/"+self.running_filename
+                    out_file_dir = os.path.dirname(out_file_path)
+                    if (not os.path.exists(out_file_dir)):
+                        # create the tmp directories
+                        os.makedirs(out_file_dir)
+                with open(out_file_path,'w') as outfile:
+                    mark=0
+                    for section,name,line,d_ln,delete in edits:
+                        while (mark<line):
+                            outfile.write(scripts.file[mark] + "\n")
+                            mark += 1
+                        outfile.write(self.file[d_ln] + "\n")
+                        if (delete):
+                            mark += 1
+                    while (mark<len(scripts.file)):
                         outfile.write(scripts.file[mark] + "\n")
                         mark += 1
-                    outfile.write(self.file[d_ln] + "\n")
-                    if (delete):
-                        mark += 1
-                while (mark<len(scripts.file)):
-                    outfile.write(scripts.file[mark] + "\n")
-                    mark += 1
-                for section in additions.keys():
-                    outfile.write("[" + section + "]\n")
-                    for (name,d_ln) in additions[section]:
-                        outfile.write(self.file[d_ln] + "\n")
-            if (verbose):
-                print "Finished processing filename: ",self.running_filename
-            self.success.append(self.running_filename)
+                    for section in additions.keys():
+                        outfile.write("[" + section + "]\n")
+                        for (name,d_ln) in additions[section]:
+                            outfile.write(self.file[d_ln] + "\n")
+                if (verbose):
+                    print "Finished processing filename: ",self.running_filename
+                self.success.append(self.running_filename)
         except IOError as e:
             if (verbose):
                 print "**** Failed processing filename: ",self.running_filename
@@ -189,10 +198,12 @@ argparser = argparse.ArgumentParser(description='Execute configuration edit scri
 argparser.add_argument('infile', nargs='?', type=argparse.FileType('r'),  default=sys.stdin)
 argparser.add_argument('outfile', nargs='?', type=argparse.FileType('w'), default=sys.stdout)
 argparser.add_argument('-v', '--verbose', action='store_true')
+argparser.add_argument('-w', '--write', action='store_true', help='force direct updates to files, a backup copy will be made...')
 args=argparser.parse_args()
 input=args.infile
 output=args.outfile
 verbose=args.verbose
+write_direct=args.write
 
 if (input.isatty()):
     sys.stderr.write("No input file specified and input is not a pipe!\n")
