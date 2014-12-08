@@ -111,7 +111,7 @@ class Editor:
                 with open(out_file_path,'w') as outfile:
                     mark=0
                     for section,name,line,d_ln,delete in edits:
-                        while (mark<line):
+                        while (mark<=line):
                             outfile.write(scripts.file[mark] + "\n")
                             mark += 1
                         outfile.write(self.file[d_ln] + "\n")
