@@ -100,7 +100,8 @@ class Editor:
                 instring=infile.read()
                 infile.close()
                 scripts.parse(instring.splitlines())
-                # scripts.dump()
+                if (dump):
+                    scripts.dump()
                 edits, additions = scripts.calculate_delta(filename,self.fields)
             else:
                 if (verbose):
@@ -182,13 +183,13 @@ class Editor:
         for ((file,section,name),d_ln) in deltas.items():
             if (filename != file):
                 continue
-            if ((section,name) in self.fields):
-                line = self.fields[(section,name)]
+            if (("",section,name) in self.fields):
+                line = self.fields[("",section,name)]
                 if (verbose):
                     print "  Replacing entry for", name, "in section [" + section + "]"
                 edits.append((section,name,line,d_ln,True))
-            elif(section in self.sections):
-                line,fields = self.sections[section]
+            elif(("",section) in self.sections):
+                line,fields = self.sections[("",section)]
                 if (verbose):
                     print "  Inserting new entry for", name, "in section [" + section + "]"
                 edits.append((section,name,line,d_ln,False))
@@ -207,7 +208,8 @@ class Editor:
 
     def execute(self,input):
         self.parse(input.splitlines())
-        # self.dump()
+        if (dump):
+            self.dump()
         # sys.exit()
         for filename in self.filenames:
             self.process_script(filename)
@@ -218,11 +220,13 @@ argparser = argparse.ArgumentParser(description='Execute configuration edit scri
 argparser.add_argument('infile', nargs='?', type=argparse.FileType('r'),  default=sys.stdin)
 argparser.add_argument('outfile', nargs='?', type=argparse.FileType('w'), default=sys.stdout)
 argparser.add_argument('-v', '--verbose', action='store_true')
+argparser.add_argument('-d', '--dump', action='store_true', help='dump the symbol tables')
 argparser.add_argument('-w', '--write', action='store_true', help='force direct updates to files, a backup copy will be made...')
 args=argparser.parse_args()
 input=args.infile
 output=args.outfile
 verbose=args.verbose
+dump=args.dump
 write_direct=args.write
 
 if (input.isatty()):
