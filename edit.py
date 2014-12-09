@@ -135,7 +135,8 @@ class Editor:
                         outfile.write(scripts.file[mark] + "\n")
                         mark += 1
                     for section in additions.keys():
-                        outfile.write("[" + section + "]\n")
+                        if (section):
+                            outfile.write("[" + section + "]\n")
                         for (name,d_ln) in additions[section]:
                             outfile.write(self.file[d_ln] + "\n")
                 if (verbose):
