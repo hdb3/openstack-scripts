@@ -274,6 +274,8 @@ args=argparser.parse_args()
 input=args.infile
 output=args.outfile
 
+sys.stdout = sys.stderr
+
 parser = MyHTMLParser()
 
 if (args.substitute):
@@ -288,8 +290,8 @@ if (args.substitute):
             value = rep[pos+1:].strip()
             parser.substitutions[key] = value
 
-if (parser.substitutions):
-    print "using the following substitution table:", parser.substitutions
+# if (parser.substitutions):
+    # print "using the following substitution table:", parser.substitutions
 
 if (args.comments):
     parser.enable_comments()
@@ -328,8 +330,6 @@ if (args.infile.name != "<stdin>"):
     output.write('<|' + args.infile.name + '|>\n')
 for line in result:
     output.write(line + '\n')
-
-sys.stdout.on()
 
 sys.stdout = sys.stderr
 

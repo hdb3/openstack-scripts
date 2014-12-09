@@ -57,6 +57,11 @@ class Editor:
         else:
             c = line[0]
             # parse a filename
+            if (line.startswith("<|")):
+                filename = line[2:line.index('|>')].strip()
+                if (verbose):
+                    print "input source file is:",filename
+            # parse a filename
             if (c == '{'):
                 filename = line[1:line.index('}')].strip()
                 self.do_filename(filename)
@@ -66,7 +71,7 @@ class Editor:
                 self.running_section=section
                 self.do_section()
             # parse a comment
-            elif (c == '#'):
+            elif (not line.strip() or line.strip()[0] == '#'):
                 pass
             # parse a field
             elif (line.find('=') != -1):
@@ -90,18 +95,24 @@ class Editor:
         scripts=Editor("script")
         print "Processing filename: ",filename
         try:
-            infile= open(filename,'r')
-            instring=infile.read()
-            infile.close()
-            scripts.parse(instring.splitlines())
-            # scripts.dump()
-            edits, additions = scripts.calculate_delta(filename,self.fields)
+            if (os.path.exists(filename)):
+                infile= open(filename,'r')
+                instring=infile.read()
+                infile.close()
+                scripts.parse(instring.splitlines())
+                # scripts.dump()
+                edits, additions = scripts.calculate_delta(filename,self.fields)
+            else:
+                if (verbose):
+                    print "Config file <" + filename + "> does not exist: creating it."
+                edits, additions = scripts.calculate_delta(filename,{})
             if (edits or additions):
                 if(write_direct):
-                    n=0
-                    while (os.path.exists(filename + "." + str(n))):
-                        n += 1
-                    os.rename(filename,filename + "." + str(n))
+                    if (os.path.exists(filename)):
+                        n=0
+                        while (os.path.exists(filename + "." + str(n))):
+                            n += 1
+                        os.rename(filename,filename + "." + str(n))
                     out_file_path = filename
                 else:
                     out_file_path = "tmp/"+filename
@@ -128,7 +139,7 @@ class Editor:
                             outfile.write(self.file[d_ln] + "\n")
                 if (verbose):
                     print "Finished processing filename: ",filename
-                self.success.append(filename)
+            self.success.append(filename)
         except IOError as e:
             if (verbose):
                 print "**** Failed processing filename: ",filename
@@ -158,7 +169,7 @@ class Editor:
 
     def dump(self):
         for (file,section),(ln,fields) in self.sections.items():
-            print 'Section "' + section + '", at line ', ln, '" has these fields:'
+            print 'File ' + file + ' / Section "' + section + '", at line ', ln, '" has these fields:'
             for field in fields:
                 fln = self.fields[(file,section,field)]
                 print '  Field:"'+field+'", at line ', fln
@@ -170,7 +181,7 @@ class Editor:
             print "  Calculating deltas for ", filename
         for ((file,section,name),d_ln) in deltas.items():
             if (filename != file):
-                break
+                continue
             if ((section,name) in self.fields):
                 line = self.fields[(section,name)]
                 if (verbose):
@@ -196,6 +207,8 @@ class Editor:
 
     def execute(self,input):
         self.parse(input.splitlines())
+        # self.dump()
+        # sys.exit()
         for filename in self.filenames:
             self.process_script(filename)
         return ["Success: " + line for line in self.success] + ["Fail   : " + line for line in self.fail]
