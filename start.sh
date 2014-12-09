@@ -4,4 +4,4 @@ tar zxf content.tgz &&
 ./build-script.sh &&
 ./files.py total.txt total.files &&
 ./sql.sh &&
-./filter.sh total.txt >  total.sh
+./filter.sh total.txt > total.sh
