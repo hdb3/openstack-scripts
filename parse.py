@@ -324,10 +324,14 @@ parser.register("","id","toolbar","ignore")
 parser.feed(input.read())
 result=parser.output
 parser.close()
+if (args.infile.name != "<stdin>"):
+    output.write('<|' + args.infile.name + '|>\n')
 for line in result:
     output.write(line + '\n')
 
 sys.stdout.on()
+
+sys.stdout = sys.stderr
 
 print "filenames"
 for k in iter(parser.filenames):
