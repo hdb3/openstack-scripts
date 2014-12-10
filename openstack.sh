@@ -10,7 +10,7 @@ source openstack-utils.sh
 	ROLE-ADD	admin	admin	_member_
 	TENANT		demo	"Demo	Tenant"
 	USER		demo	admin	user@example.com
-	ROLE-ADD	tenant	demo	demo	role	_member_
+	ROLE-ADD	tenant	demo	demo	_member_
 	TENANT		service	"Service Tenant"
 
 	SERVICE		keystone	identity	"OpenStack Identity"
