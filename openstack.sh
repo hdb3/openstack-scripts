@@ -48,7 +48,7 @@ source openstack-utils.sh
 	USER		nova	admin
 	ROLE-ADD	nova	service	admin
 	SERVICE		nova	compute	"OpenStack Compute"
-	ENDPOINT	regionOne	compute	8774/v2/%\(tenant_id\)s
+	ENDPOINT	regionOne	compute	"8774/v2/%\(tenant_id\)s"
 
 	USER		neutron	admin
 	ROLE-ADD	neutron	service	admin
