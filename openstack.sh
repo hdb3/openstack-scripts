@@ -1,5 +1,7 @@
 #!/bin/bash
 source openstack-utils.sh
+export OS_SERVICE_TOKEN=7ad31e26090fdc3f2379
+export OS_SERVICE_ENDPOINT=http://controller:35357/v2.0
 
 	TENANT		admin	"Admin Tenant"
 	USER		admin	admin	user@example.com
