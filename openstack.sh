@@ -13,7 +13,7 @@ source openstack-utils.sh
 	TENANT		service	"Service Tenant"
 
 	SERVICE		keystone	identity	"OpenStack Identity"
-	ENDPOINT	regionOne	identity	5000/v2.0	5000/v2.0	35357/v2.0
+	ENDPOINT	regionOne	identity	"5000/v2.0"	"5000/v2.0"	"35357/v2.0"
 
 #verification..
 	KADMIN		token-get
@@ -60,9 +60,9 @@ source openstack-utils.sh
 	USER		cinder	admin
 	ROLE-ADD	cinder	service	admin
 	SERVICE		cinder	volume	"OpenStack Block Storage"
-	SERVICE		cinderv2	volumev2	"OpenStack	Block	Storage"
-	ENDPOINT	regionOne	volume	8776/v1/%\(tenant_id\)s
-	ENDPOINT	regionOne	volumev2	8776/v2/%\(tenant_id\)s
+	SERVICE		cinderv2	volumev2	"OpenStack Block Storage"
+	ENDPOINT	regionOne	volume	"8776/v1/%\(tenant_id\)s"
+	ENDPOINT	regionOne	volumev2	"8776/v2/%\(tenant_id\)s"
 	COMMAND		cinder		create	--display-name	demo-volume1	1
 	USER		heat	admin
 	ROLE-ADD	heat	service	admin
@@ -70,8 +70,8 @@ source openstack-utils.sh
 	ROLE		heat_stack_owner
 	SERVICE		heat	orchestration	"Orchestration"
 	SERVICE		heat-cfn	cloudformation	"Orchestration"
-	ENDPOINT	regionOne	orchestration	8004/v1/%\(tenant_id\)s
-	ENDPOINT	regionOne	cloudformation	8000/v1
+	ENDPOINT	regionOne	orchestration	"8004/v1/%\(tenant_id\)s"
+	ENDPOINT	regionOne	cloudformation	"8000/v1"
 	COMMAND		"NET_ID=\$(neutron	net-list	|	awk	'/	demo-net	/	{	print	\$2	}')"
 	COMMAND		heat		stack-create	-f	test-stack.yml	-P	"ImageID=cirros-0.3.3-x86_64;NetID=$NET_ID"	testStack
 	USER		ceilometer	admin

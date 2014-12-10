@@ -5,7 +5,7 @@ function COMMAND {
 }
 
 function TENANT {
- echo "keystone tenant-create --name $1 --description $2"
+ echo "keystone tenant-create --name $1 --description \"$2\""
 }
 
 # keystone user-create --name admin --pass admin --email user@example.com
@@ -31,7 +31,7 @@ function ROLE-ADD {
 # keystone service-create --name keystone --type identity --description "OpenStack Identity"
 # SERVICE keystone identity "OpenStack Identity"
 function SERVICE {
- echo "keystone service-create --name $1 --type $2 --description $3"
+ echo "keystone service-create --name $1 --type $2 --description \"$3\""
 }
 
 # keystone endpoint-create --service-id $(keystone service-list | awk '/ identity / {print $2}') --publicurl http://controller:5000/v2.0 --internalurl http://controller:5000/v2.0 --adminurl http://controller:35357/v2.0 --region regionOne
