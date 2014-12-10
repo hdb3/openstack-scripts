@@ -6,4 +6,5 @@ tar zxf content.tgz &&
 # ./sql.sh &&
 ./filter.sh total.txt > total.sh &&
 ./edit.py -w total.files  &&
+sudo service mysql restart &&
 sudo rabbitmqctl change_password guest admin
