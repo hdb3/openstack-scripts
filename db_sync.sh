@@ -2,7 +2,7 @@
 
 source utils.sh
 DBUSER=root
-DBPASS=admin
+DBPASS=root
 
 # KEYSTONE
  DB keystone keystone admin

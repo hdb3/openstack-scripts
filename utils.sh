@@ -5,7 +5,7 @@ function RM {
 }
 
 function SU {
- echo "sudo su -s /bin/sh -c $2 $1"
+ echo "sudo su -s /bin/sh -c '$2' $1"
 }
 
 function RESTART {
@@ -13,7 +13,7 @@ function RESTART {
 }
 
 function MYSQL {
-    echo "mysql -u DBUSER --password=DBPASS -vv -f -e $1"
+    echo "mysql -u $DBUSER --password=$DBPASS -vv -f -e \"$1\""
     # mysql -vv -f -u root --password=root
 }
 
