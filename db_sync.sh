@@ -11,7 +11,7 @@ DBPASS=root
  RM /var/lib/keystone/keystone.db
 
 # GLANCE
- DB keystone keystone admin
+ DB glance glance admin
  SU glance "glance-manage db_sync"
  RESTART glance-registry glance-api
 

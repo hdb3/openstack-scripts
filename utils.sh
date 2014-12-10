@@ -9,12 +9,14 @@ function SU {
 }
 
 function RESTART {
-    echo "sudo service $1 restart"
+for arg
+do
+    echo "sudo service $arg restart"
+done
 }
 
 function MYSQL {
     echo "mysql -u $DBUSER --password=$DBPASS -vv -f -e \"$1\""
-    # mysql -vv -f -u root --password=root
 }
 
 function DB {
