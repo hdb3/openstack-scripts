@@ -8,6 +8,8 @@ echo "echo 'Finished...'"
 function AUTH {
 echo "export OS_SERVICE_TOKEN=7ad31e26090fdc3f2379 $AND"
 echo "export OS_SERVICE_ENDPOINT=http://controller:35357/v2.0 $AND"
+echo "export OS_AUTH_URL=http://controller:35357/v2.0 $AND"
+
 }
 
 function UNAUTH {

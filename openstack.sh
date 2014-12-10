@@ -33,9 +33,8 @@ source openstack-utils.sh
 	KADMIN		role-list
 	KDEMO		token-get
 	KDEMOFAIL		user-list
+	KADMIN		token-get
         AUTH
-
-
 
 	USER		glance	admin
 	ROLE-ADD	glance	service	admin
