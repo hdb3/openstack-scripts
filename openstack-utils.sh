@@ -41,7 +41,7 @@ function ROLE {
 # keystone user-role-add --tenant admin --user admin --role admin
 # ROLE-ADD admin admin admin
 function ROLE-ADD {
- echo "keystone user-role-add --tenant $1 --user $2 --role $3 $AND"
+ echo "keystone user-role-add --user $1 --tenant $2 --role $3 $AND"
 }
 
 
@@ -73,6 +73,9 @@ function KADMIN {
 # KDEMO token-get
 function KDEMO {
  echo "keystone --os-tenant-name demo --os-username demo --os-password admin --os-auth-url http://controller:35357/v2.0 $1 $AND"
+}
+function KDEMOFAIL {
+ echo "keystone --os-tenant-name demo --os-username demo --os-password admin --os-auth-url http://controller:35357/v2.0 $1 ||"
 }
 
 # glance image-create --name "cirros-0.3.3-x86_64" --file cirros-0.3.3-x86_64-disk.img --disk-format qcow2 --container-format bare --is-public True --progress

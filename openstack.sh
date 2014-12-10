@@ -10,13 +10,14 @@ source openstack-utils.sh
 	ROLE-ADD	admin	admin	_member_
 	TENANT		demo	"Demo	Tenant"
 	USER		demo	admin	user@example.com
-	ROLE-ADD	tenant	demo	demo	_member_
+	ROLE-ADD	demo	demo	_member_
 	TENANT		service	"Service Tenant"
 
 	SERVICE		keystone	identity	"OpenStack Identity"
 	ENDPOINT	regionOne	identity	"5000/v2.0"	"5000/v2.0"	"35357/v2.0"
 
 #verification..
+	UNAUTH
 	KADMIN		token-get
 	KADMIN		tenant-list
 	KADMIN		user-list
@@ -26,13 +27,12 @@ source openstack-utils.sh
 
 	KDEMO		token-get
 	KDEMO		user-list
-	UNAUTH
 	KADMIN		token-get
 	KADMIN		tenant-list
 	KADMIN		user-list
 	KADMIN		role-list
 	KDEMO		token-get
-	KDEMO		user-list
+	KDEMOFAIL		user-list
         AUTH
 
 
