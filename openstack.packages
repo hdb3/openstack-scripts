@@ -20,7 +20,10 @@ lvm2
 mariadb-server
 memcached
 mongodb-server
+neutron-dhcp-agent
+neutron-l3-agent
 neutron-plugin-ml2
+neutron-plugin-openvswitch-agent
 neutron-server
 nova-api
 nova-cert

@@ -21,10 +21,13 @@ def execute (data):
     for line in data:
         if (not line):
            pass
+        elif (line.startswith("<|")):
+            output.write(line + "\n")
+            show=False
         elif (line[0] in "$#+|!"):
             show=False
-        elif (line.startswith("{admin-openrc.sh}") or line.startswith("{demo-openrc.sh}")):
-            show=False
+        # elif (line.startswith("{admin-openrc.sh}") or line.startswith("{demo-openrc.sh}")):
+            # show=False
         elif (line[0] == '{' and line[-1] == '}'):
             show=True
             start_line = line

@@ -102,11 +102,11 @@ class Editor:
                 scripts.parse(instring.splitlines())
                 if (dump):
                     scripts.dump()
-                edits, additions = scripts.calculate_delta(filename,self.fields)
             else:
                 if (verbose):
                     print "Config file <" + filename + "> does not exist: creating it."
-                edits, additions = scripts.calculate_delta(filename,{})
+                scripts.parse([])
+            edits, additions = scripts.calculate_delta(filename,self.fields)
             if (edits or additions):
                 if(write_direct):
                     if (os.path.exists(filename)):
@@ -135,7 +135,8 @@ class Editor:
                         outfile.write(scripts.file[mark] + "\n")
                         mark += 1
                     for section in additions.keys():
-                        outfile.write("[" + section + "]\n")
+                        if (section):
+                            outfile.write("[" + section + "]\n")
                         for (name,d_ln) in additions[section]:
                             outfile.write(self.file[d_ln] + "\n")
                 if (verbose):
@@ -186,16 +187,16 @@ class Editor:
             if (("",section,name) in self.fields):
                 line = self.fields[("",section,name)]
                 if (verbose):
-                    print "  Replacing entry for", name, "in section [" + section + "]"
+                    print "    Replacing entry for", name, "in section [" + section + "]"
                 edits.append((section,name,line,d_ln,True))
             elif(("",section) in self.sections):
                 line,fields = self.sections[("",section)]
                 if (verbose):
-                    print "  Inserting new entry for", name, "in section [" + section + "]"
+                    print "    Inserting new entry for", name, "in section [" + section + "]"
                 edits.append((section,name,line,d_ln,False))
             else:
                 if (verbose):
-                    print "  Inserting new entry for", name, "in new section [" + section + "]"
+                    print "    Inserting new entry for", name, "in new section [" + section + "]"
                 update = (name,d_ln)
                 if (section not in additions):
                     additions[section] = [update]
@@ -203,7 +204,7 @@ class Editor:
                      additions[section].append(update)
         edits.sort(key=lambda update: update[2])
         if (verbose):
-            print "  Calculating deltas for ", filename
+            print "  Finished Calculating deltas for ", filename
         return (edits,additions)
 
     def execute(self,input):
