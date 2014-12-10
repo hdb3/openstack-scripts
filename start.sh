@@ -1,10 +1,10 @@
 #!/bin/bash -v
-sudo bash openstack.apt.sh
+# sudo bash openstack.apt.sh
 tar zxf content.tgz &&
 ./build-script.sh &&
 ./files.py total.txt total.files &&
 # ./sql.sh &&
 ./filter.sh total.txt > total.sh &&
-./edit.py -w total.files  &&
+sudo ./edit.py -w total.files  &&
 sudo service mysql restart &&
 sudo rabbitmqctl change_password guest admin
