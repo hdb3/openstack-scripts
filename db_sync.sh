@@ -15,7 +15,12 @@ DBPASS=root
  SU glance "glance-manage db_sync"
  RESTART glance-registry glance-api
 
-# NEUTRON/NOVA
+# NOVA
+ DB nova nova admin
+ SU neutron "nova-manage db sync"
+ RESTART nova-api nova-cert nova-consoleauth nova-scheduler nova-conductor nova-novncproxy
+
+# NEUTRON
  DB neutron neutron admin
  SU neutron "neutron-db-manage --config-file /etc/neutron/neutron.conf --config-file /etc/neutron/plugins/ml2/ml2_conf.ini upgrade juno"
  RESTART nova-api nova-scheduler nova-conductor neutron-server nova-api neutron-plugin-openvswitch-agent neutron-l3-agent neutron-dhcp-agent neutron-metadata-agent nova-compute neutron-plugin-openvswitch-agent
@@ -33,3 +38,7 @@ DBPASS=root
  RM /var/lib/heat/heat.sqlite
 
  END
+
+
+
+

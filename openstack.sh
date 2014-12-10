@@ -45,6 +45,11 @@ source openstack-utils.sh
 	IMAGE		"cirros-0.3.3-x86_64"	cirros-0.3.3-x86_64-disk.img	qcow2	bare	True
 	IMAGE-LIST
 
+	USER		nova	admin
+	ROLE-ADD	nova	service	admin
+	SERVICE		nova	compute	"OpenStack Compute"
+	ENDPOINT	regionOne	compute	8774/v2/%\(tenant_id\)s
+
 	USER		neutron	admin
 	ROLE-ADD	neutron	service	admin
 	SERVICE		neutron	network	"OpenStack Networking"

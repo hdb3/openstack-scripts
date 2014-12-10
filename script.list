@@ -13,7 +13,7 @@ ch_glance.html
 # image-service-overview.html
 glance-install.html
 glance-verify.html
-#ch_nova.html
+ch_nova.html
 #ch_networking.html
 #section_neutron-networking.html
 #neutron-concepts.html
