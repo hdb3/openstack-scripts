@@ -17,8 +17,8 @@ DBPASS=root
 
 # NEUTRON/NOVA
  DB neutron neutron admin
- SU neutron "neutron-db-manage --config-file /etc/neutron/neutron.conf   --config-file /etc/neutron/plugins/ml2/ml2_conf.ini upgrade juno"
- RESTART nova-api nova-scheduler nova-conductor neutron-server nova-api neutron-plugin-openvswitch-agent neutron-l3-agent neutron-dhcp-agent neutron-metadata-agent -switch nova-compute neutron-plugin-openvswitch-agent
+ SU neutron "neutron-db-manage --config-file /etc/neutron/neutron.conf --config-file /etc/neutron/plugins/ml2/ml2_conf.ini upgrade juno"
+ RESTART nova-api nova-scheduler nova-conductor neutron-server nova-api neutron-plugin-openvswitch-agent neutron-l3-agent neutron-dhcp-agent neutron-metadata-agent nova-compute neutron-plugin-openvswitch-agent
 
 # CINDER
  DB cinder cinder admin
