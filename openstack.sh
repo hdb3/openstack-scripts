@@ -36,6 +36,7 @@ source openstack-utils.sh
 	KADMIN		token-get
         AUTH
 
+	ADMINRC
 	USER		glance	admin
 	ROLE-ADD	glance	service	admin
 	SERVICE		glance	image	"OpenStack Image Service"
@@ -48,11 +49,11 @@ source openstack-utils.sh
 	ROLE-ADD	neutron	service	admin
 	SERVICE		neutron	network	"OpenStack Networking"
 	ENDPOINT	regionOne	network	9696
-	COMMAND		"tenant-get	service"
+	COMMAND		"keystone tenant-get	service"
 	COMMAND		"neutron	ext-list"
-	SUBNET		ext-net	ext-subnetg10.30.66.2	10.30.66.50	10.30.66.1	10.30.66.0/24
-	NET		ext-netg
-	SUBNET		ext-net	ext-subnet	10.30.66.2	10.30.66.50	10.30.66.1	10.30.66.0/24
+	EXTNET		ext-net
+	#		network name	subnet name	gateway		CIDR		alloc start	alloc end
+	SUBNET	ext-net		ext-subnet	10.30.66.1      10.30.66.0/24	10.30.66.2	10.30.66.50
 	NET		demo-net
 	SUBNET		demo-net	demo-subnet	192.168.1.1	192.168.1.0/24
 	ROUTER		demo-router

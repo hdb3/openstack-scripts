@@ -1,8 +1,11 @@
-
 AND='&&'
 
 function END {
 echo "echo 'Finished...'"
+}
+
+function ADMINRC {
+echo "source admin-openrc.sh $AND"
 }
 
 function AUTH {
@@ -95,17 +98,22 @@ function IMAGE-LIST {
 # neutron subnet-create ext-net --name ext-subnet --allocation-pool start=10.30.66.2,end=10.30.66.50 --disable-dhcp --gateway 10.30.66.1 10.30.66.0/24
 # SUBNET ext-net ext-subnet --allocation-pool start=10.30.66.2,end=10.30.66.50 --disable-dhcp --gateway 10.30.66.1 10.30.66.0/24
 function SUBNET {
-if [[ $# > 4 ]] ; then
- echo "neutron subnet-create ext-net --name $1 --allocation-pool start=$4,end=$5 --disable-dhcp --gateway $2 $3 $AND"
+if [[ $# > 5 ]] ; then
+ echo "neutron subnet-create $1 --name $2 --disable-dhcp --gateway $3 --allocation-pool start=$5,end=$6 $4 $AND"
 else
- echo "neutron subnet-create ext-net --name $1 --disable-dhcp --gateway $2 $3 $AND"
+ echo "neutron subnet-create $1 --name $2 --disable-dhcp --gateway $3 $4 $AND"
 fi
 }
 
 # neutron net-create ext-net --shared --router:external True --provider:physical_network external --provider:network_type flat
 # NET ext-net
-function NET {
+function EXTNET {
  echo "neutron net-create $1 --shared --router:external True --provider:physical_network external --provider:network_type flat $AND"
+}
+
+# NET ext-net
+function NET {
+ echo "neutron net-create $1 $AND"
 }
 
 # neutron router-create demo-router
@@ -123,5 +131,5 @@ function INTERFACE {
 # neutron router-gateway-set demo-router ext-net
 # GATEWAY demo-router ext-net
 function GATEWAY {
- echo "neutron router-gateway-set-interface-add $1 $2 $AND"
+ echo "neutron router-gateway-set $1 $2 $AND"
 }
