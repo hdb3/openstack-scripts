@@ -2,7 +2,7 @@
 AND='&&'
 
 function END {
-echo "Finished..."
+echo "echo 'Finished...'"
 }
 
 function RM {
