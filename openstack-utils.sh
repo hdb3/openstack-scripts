@@ -75,7 +75,7 @@ function KDEMO {
  echo "keystone --os-tenant-name demo --os-username demo --os-password admin --os-auth-url http://controller:35357/v2.0 $1 $AND"
 }
 function KDEMOFAIL {
- echo "keystone --os-tenant-name demo --os-username demo --os-password admin --os-auth-url http://controller:35357/v2.0 $1 ||"
+ echo "keystone --os-tenant-name demo --os-username demo --os-password admin --os-auth-url http://controller:35357/v2.0 $1"
 }
 
 # glance image-create --name "cirros-0.3.3-x86_64" --file cirros-0.3.3-x86_64-disk.img --disk-format qcow2 --container-format bare --is-public True --progress
