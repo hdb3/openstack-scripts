@@ -5,5 +5,5 @@ tar zxf content.tgz &&
 ./files.py total.txt total.files &&
 # ./sql.sh &&
 ./filter.sh total.txt > total.sh &&
-./edit.py total.files  &&
+./edit.py -w total.files  &&
 sudo rabbitmqctl change_password guest admin
