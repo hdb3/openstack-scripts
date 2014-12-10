@@ -80,3 +80,4 @@ source openstack-utils.sh
 	ROLE-ADD	ceilometer	service	admin
 	SERVICE		ceilometer	metering	"Telemetry"
 	ENDPOINT	regionOne	metering	8777
+	END

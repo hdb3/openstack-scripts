@@ -1,22 +1,27 @@
-#!/bin/bash
+
+AND='&&'
+
+function END {
+echo "Finished..."
+}
 
 function RM {
- echo "sudo rm -f $1"
+ echo "sudo rm -f $1 $AND"
 }
 
 function SU {
- echo "sudo su -s /bin/sh -c '$2' $1"
+ echo "sudo su -s /bin/sh -c '$2' $1 $AND"
 }
 
 function RESTART {
 for arg
 do
-    echo "sudo service $arg restart"
+    echo "sudo service $arg restart $AND"
 done
 }
 
 function MYSQL {
-    echo "mysql -u $DBUSER --password=$DBPASS -vv -f -e \"$1\""
+    echo "mysql -u $DBUSER --password=$DBPASS -vv -f -e \"$1\" $AND"
 }
 
 function DB {
