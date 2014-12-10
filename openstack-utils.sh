@@ -1,3 +1,14 @@
+
+function AUTH {
+echo "export OS_SERVICE_TOKEN=7ad31e26090fdc3f2379"
+echo "export OS_SERVICE_ENDPOINT=http://controller:35357/v2.0"
+}
+
+function UNAUTH {
+echo "unset OS_SERVICE_TOKEN"
+echo "unset OS_SERVICE_ENDPOINT"
+}
+
 # keystone tenant-create --name admin --description "Admin Tenant"
 # TENANT admin "Admin Tenant"
 function COMMAND {

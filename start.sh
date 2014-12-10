@@ -7,4 +7,7 @@ tar zxf content.tgz &&
 ./filter.sh total.txt > total.sh &&
 sudo ./edit.py -w total.files  &&
 sudo service mysql restart &&
-sudo rabbitmqctl change_password guest admin
+sudo rabbitmqctl change_password guest admin &&
+./db_sync.sh > db.sh &&
+source db.sh &&
+./openstack.sh > os.sh

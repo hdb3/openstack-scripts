@@ -1,8 +1,7 @@
 #!/bin/bash
 source openstack-utils.sh
-export OS_SERVICE_TOKEN=7ad31e26090fdc3f2379
-export OS_SERVICE_ENDPOINT=http://controller:35357/v2.0
 
+        AUTH
 	TENANT		admin	"Admin Tenant"
 	USER		admin	admin	user@example.com
 	ROLE		admin
@@ -27,30 +26,31 @@ export OS_SERVICE_ENDPOINT=http://controller:35357/v2.0
 
 	KDEMO		token-get
 	KDEMO		user-list
-	unset		OS_SERVICE_TOKEN	OS_SERVICE_ENDPOINT	regionOne
+	UNAUTH
 	KADMIN		token-get
 	KADMIN		tenant-list
 	KADMIN		user-list
 	KADMIN		role-list
 	KDEMO		token-get
 	KDEMO		user-list
-	COMMAND		source		admin-openrc.sh
+        AUTH
 
 
 
 	USER		glance	admin
 	ROLE-ADD	glance	service	admin
-	SERVICE		glance	--type	image	"OpenStack Image Service"
+	SERVICE		glance	image	"OpenStack Image Service"
 	ENDPOINT	regionOne	image	9292
+	COMMAND		"wget http://cdn.download.cirros-cloud.net/0.3.3/cirros-0.3.3-x86_64-disk.img"
 	IMAGE		"cirros-0.3.3-x86_64"	cirros-0.3.3-x86_64-disk.img	qcow2	bare	True
 	IMAGE-LIST
 
 	USER		neutron	admin
 	ROLE-ADD	neutron	service	admin
-	SERVICE		neutron	--type	network	"OpenStack Networking"
+	SERVICE		neutron	network	"OpenStack Networking"
 	ENDPOINT	regionOne	network	9696
-	COMMAND		tenant-get	service
-	COMMAND		neutron	ext-list
+	COMMAND		"tenant-get	service"
+	COMMAND		"neutron	ext-list"
 	SUBNET		ext-net	ext-subnetg10.30.66.2	10.30.66.50	10.30.66.1	10.30.66.0/24
 	NET		ext-netg
 	SUBNET		ext-net	ext-subnet	10.30.66.2	10.30.66.50	10.30.66.1	10.30.66.0/24
@@ -65,7 +65,7 @@ export OS_SERVICE_ENDPOINT=http://controller:35357/v2.0
 	SERVICE		cinderv2	volumev2	"OpenStack Block Storage"
 	ENDPOINT	regionOne	volume	"8776/v1/%\(tenant_id\)s"
 	ENDPOINT	regionOne	volumev2	"8776/v2/%\(tenant_id\)s"
-	COMMAND		cinder		create	--display-name	demo-volume1	1
+	COMMAND		"cinder		create	--display-name	demo-volume1	1"
 	USER		heat	admin
 	ROLE-ADD	heat	service	admin
 	ROLE		heat_stack_user
@@ -75,7 +75,7 @@ export OS_SERVICE_ENDPOINT=http://controller:35357/v2.0
 	ENDPOINT	regionOne	orchestration	"8004/v1/%\(tenant_id\)s"
 	ENDPOINT	regionOne	cloudformation	"8000/v1"
 	COMMAND		"NET_ID=\$(neutron	net-list	|	awk	'/	demo-net	/	{	print	\$2	}')"
-	COMMAND		heat		stack-create	-f	test-stack.yml	-P	"ImageID=cirros-0.3.3-x86_64;NetID=$NET_ID"	testStack
+	COMMAND		"heat		stack-create	-f	test-stack.yml	-P	\"ImageID=cirros-0.3.3-x86_64;NetID=\$NET_ID\"	testStack"
 	USER		ceilometer	admin
 	ROLE-ADD	ceilometer	service	admin
 	SERVICE		ceilometer	metering	"Telemetry"
