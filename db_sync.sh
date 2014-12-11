@@ -17,7 +17,7 @@ DBPASS=root
 
 # NOVA
  DB nova nova admin
- SU neutron "nova-manage db sync"
+ SU nova "nova-manage db sync"
  RESTART nova-api nova-cert nova-consoleauth nova-scheduler nova-conductor nova-novncproxy
 
 # NEUTRON
