@@ -8,12 +8,12 @@ tar zxf content.tgz &&
 # ./sql.sh &&
 ./filter.sh total.txt > total.sh &&
 sudo ./edit.py -w total.files  &&
+./address-fix.sh &&
 sudo service mysql restart &&
 sudo rabbitmqctl change_password guest admin &&
 ./openswitch.sh
 ./lvm.sh
 ./db_sync.sh > db.sh &&
 source db.sh &&
-./address-fix.sh &&
 ./openstack.sh > os.sh &&
 source os.sh
