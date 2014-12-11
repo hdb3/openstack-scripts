@@ -12,6 +12,7 @@ source openstack-utils.sh
 	USER		demo	admin	user@example.com
 	ROLE-ADD	demo	demo	_member_
 	TENANT		service	"Service Tenant"
+	COMMAND		"./update-neutron-conf.sh"
 
 	SERVICE		keystone	identity	"OpenStack Identity"
 	ENDPOINT	regionOne	identity	"5000/v2.0"	"5000/v2.0"	"35357/v2.0"
