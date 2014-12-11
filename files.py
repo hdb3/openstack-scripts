@@ -26,6 +26,8 @@ def execute (data):
             show=False
         elif (line[0] in "$#+|!"):
             show=False
+        elif (line.startswith("{/etc/lvm/lvm.conf}")):
+            show=False
         # elif (line.startswith("{admin-openrc.sh}") or line.startswith("{demo-openrc.sh}")):
             # show=False
         elif (line[0] == '{' and line[-1] == '}'):

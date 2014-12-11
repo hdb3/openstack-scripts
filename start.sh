@@ -14,5 +14,6 @@ sudo rabbitmqctl change_password guest admin &&
 ./lvm.sh
 ./db_sync.sh > db.sh &&
 source db.sh &&
+address-fix.sh &&
 ./openstack.sh > os.sh &&
 source os.sh
