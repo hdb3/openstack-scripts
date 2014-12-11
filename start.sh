@@ -16,4 +16,5 @@ sudo rabbitmqctl change_password guest admin &&
 ./db_sync.sh > db.sh &&
 source db.sh &&
 ./openstack.sh > os.sh &&
-source os.sh
+source os.sh &&
+neutron subnet-update demo-subnet --enable_dhcp True
