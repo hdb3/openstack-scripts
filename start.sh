@@ -13,8 +13,10 @@ sudo service mysql restart &&
 sudo rabbitmqctl change_password guest admin &&
 ./openswitch.sh
 ./lvm.sh
-./db_sync.sh > db.sh &&
-source db.sh &&
-./openstack.sh > os.sh &&
-source os.sh &&
-neutron subnet-update demo-subnet --enable_dhcp True
+./build-db_sync.sh > db_sync &&
+source db_sync &&
+./build-openstack.sh > openstack &&
+source openstack &&
+neutron subnet-update demo-subnet --enable_dhcp True &&
+./build-restart.sh > restart &&
+source restart &&
