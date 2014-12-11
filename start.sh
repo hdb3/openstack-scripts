@@ -19,4 +19,4 @@ source db_sync &&
 source openstack &&
 neutron subnet-update demo-subnet --enable_dhcp True &&
 ./build-restart.sh > restart &&
-source restart &&
+source restart
