@@ -10,7 +10,8 @@ tar zxf content.tgz &&
 sudo ./edit.py -w total.files  &&
 sudo service mysql restart &&
 sudo rabbitmqctl change_password guest admin &&
-./openswitch.sh &&
+./openswitch.sh
+./lvm.sh
 ./db_sync.sh > db.sh &&
 source db.sh &&
 ./openstack.sh > os.sh &&
