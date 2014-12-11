@@ -1,5 +1,7 @@
 #!/bin/bash -v
-sudo bash openstack.apt.sh &&
+echo "This installer assumes that the ubuntu cloudstack packages are already installed and up-to-date."
+read -t 10 -n 1 c
+# sudo bash openstack.apt.sh &&
 tar zxf content.tgz &&
 ./build-script.sh &&
 ./files.py total.txt total.files &&
