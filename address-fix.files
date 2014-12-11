@@ -4,3 +4,6 @@ bind_ip = 10.30.65.202
 {/etc/mysql/my.cnf}
 [mysqld]
 bind-address = 10.30.65.202
+{/etc/nova/nova-compute.conf}
+[libvirt]
+virt_type = kvm
