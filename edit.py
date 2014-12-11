@@ -127,7 +127,7 @@ class Editor:
                         while (mark<line):
                             outfile.write(scripts.file[mark] + "\n")
                             mark += 1
-                        if (not delete):
+                        if (mark < len(scripts.file) and not delete):
                             outfile.write(scripts.file[mark] + "\n")
                         mark += 1
                         outfile.write(self.file[d_ln] + "\n")
