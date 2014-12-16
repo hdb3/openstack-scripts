@@ -11,7 +11,7 @@ sudo ./edit.py -w total.files  &&
 ./address-fix.sh &&
 sudo service mysql restart &&
 sudo rabbitmqctl change_password guest admin &&
-./openswitch.sh
+./config-openvswitch.sh &&
 ./lvm.sh
 ./build-db_sync.sh > db_sync &&
 source db_sync &&
