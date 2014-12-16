@@ -10,3 +10,5 @@ virt_type = kvm
 {/etc/nova/nova.conf}
 [DEFAULT]
 novncproxy_base_url = http://10.30.65.202:6080/vnc_auto.html
+metadata_host = 10.30.65.202
+dns_server=8.8.8.8
