@@ -95,8 +95,8 @@ function IMAGE-LIST {
  echo "glance image-list $AND"
 }
 
-# neutron subnet-create ext-net --name ext-subnet --allocation-pool start=10.30.66.2,end=10.30.66.50 --disable-dhcp --gateway 10.30.66.1 10.30.66.0/24
-# SUBNET ext-net ext-subnet --allocation-pool start=10.30.66.2,end=10.30.66.50 --disable-dhcp --gateway 10.30.66.1 10.30.66.0/24
+# neutron subnet-create ext-net --name ext-subnet --allocation-pool start=10.0.6.2,end=10.0.6.50 --disable-dhcp --gateway 10.0.6.1 10.0.6.0/24
+# SUBNET ext-net ext-subnet --allocation-pool start=10.0.6.2,end=10.0.6.50 --disable-dhcp --gateway 10.0.6.1 10.0.6.0/24
 function SUBNET {
 if [[ $# > 5 ]] ; then
  echo "neutron subnet-create $1 --name $2 --disable-dhcp --gateway $3 --allocation-pool start=$5,end=$6 $4 $AND"
