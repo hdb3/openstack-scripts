@@ -18,5 +18,8 @@ source db_sync &&
 ./build-openstack.sh > openstack &&
 source openstack &&
 neutron subnet-update demo-subnet --enable_dhcp True &&
+neutron subnet-update demo-subnet --dns-nameserver 8.8.8.8 &&
+neutron subnet-update ext-subnet --enable_dhcp True &&
+neutron subnet-update ext-subnet --dns-nameserver 8.8.8.8 &&
 ./build-restart.sh > restart &&
 source ./restart
