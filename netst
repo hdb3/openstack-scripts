@@ -1,0 +1,23 @@
+#!/bin/bash
+
+#iptables_report="iptables-save \|grep -v '\(virbr0\)\|\(^:\)\|\(^#\)\|\(^COMMIT$\)'"
+
+function state_report {
+	echo "### $1 ###"
+	if [[ $1 == 'DEFAULT'  ]] ; then
+		wrapper=""
+	else
+		wrapper="ip netns exec $1"
+	fi
+	echo "### LINKS: $1 ###"
+	$wrapper ip link
+	echo "### OVSWITCH: $1 ###"
+	$wrapper ovs-vsctl show
+	echo "### IPTABLES: $1 ###"
+	$wrapper iptables-save |grep -v '\(virbr0\)\|\(^:\)\|\(^#\)\|\(^COMMIT$\)'
+	echo "###"
+	echo
+}
+
+state_report "DEFAULT"
+for ns in `ip netns` ; do state_report $ns ; done
