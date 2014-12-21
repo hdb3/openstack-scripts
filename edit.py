@@ -1,6 +1,6 @@
 #!/usr/bin/python2.7
 
-import os.path, os, argparse,sys, warnings
+import os.path, os, argparse,sys
 # edit.py
 # applies changes to configuration files
 # input is a list of lines which would be valid content
@@ -86,6 +86,9 @@ class Editor:
 
     def do_filename(self,filename):
         assert self.mode == "delta"
+        # if this assertion fails it is probably because the config file we are updating
+        # has got some line that looks more like an edit script
+        # possibly this could be ignored, but it shouldn't happen
         self.running_filename=filename
         self.running_section=""
         self.filenames.add(filename)
