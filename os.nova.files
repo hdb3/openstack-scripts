@@ -1,6 +1,6 @@
 {/etc/nova/nova.conf}
 [DEFAULT]
-my_ip = nova
+my_ip = 127.0.0.1
 notification_driver = ceilometer.compute.nova_notifier
 dhcpbridge_flagfile=/etc/nova/nova.conf
 novncproxy_base_url = http://controller:6080/vnc_auto.html

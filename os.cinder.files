@@ -1,6 +1,6 @@
 {/etc/cinder/cinder.conf}
 [DEFAULT]
-my_ip = cinder
+my_ip = 127.0.0.1
 rootwrap_config = /etc/cinder/rootwrap.conf
 control_exchange = cinder
 api_paste_confg = /etc/cinder/api-paste.ini
