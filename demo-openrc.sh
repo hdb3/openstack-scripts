@@ -1,4 +1,4 @@
-{demo-openrc.sh}
+# {demo-openrc.sh}
 export OS_TENANT_NAME=demo
 export OS_USERNAME=demo
 export OS_PASSWORD=admin
