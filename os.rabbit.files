@@ -17,10 +17,12 @@ rabbit_host = controller
 [DEFAULT]
 rpc_backend = rabbit
 rabbit_host = controller
+rabbit_password = admin
 {/etc/glance/glance-api.conf}
 [DEFAULT]
 rpc_backend = rabbit
 rabbit_host = controller
+rabbit_password = admin
 {/etc/nova/nova.conf}
 [DEFAULT]
 rabbit_host = controller

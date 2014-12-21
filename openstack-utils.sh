@@ -5,7 +5,8 @@ echo "echo 'Finished...'"
 }
 
 function ADMINRC {
-echo "source keystone-env.sh $AND"
+# echo "source keystone-env.sh $AND"
+echo "source admin-openrc.sh $AND"
 }
 
 function AUTH {
