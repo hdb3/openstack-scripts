@@ -1,0 +1,19 @@
+{/etc/neutron/neutron.conf}
+[DEFAULT]
+nova_region_name = regionOne
+notify_nova_on_port_status_changes = True
+allow_overlapping_ips = True
+nova_admin_username = nova
+notify_nova_on_port_data_changes = True
+nova_admin_auth_url = http://controller:35357/v2.0
+nova_admin_tenant_id = SERVICE_TENANT_ID
+service_plugins = router
+nova_url = http://controller:8774/v2
+nova_admin_password = admin
+lock_path = /var/lock/neutron
+core_plugin = ml2
+[agent]
+root_helper = sudo /usr/bin/neutron-rootwrap /etc/neutron/rootwrap.conf
+[service_providers]
+service_provider=LOADBALANCER:Haproxy:neutron.services.loadbalancer.drivers.haproxy.plugin_driver.HaproxyOnHostPluginDriver:default
+service_provider=VPN:openswan:neutron.services.vpn.service_drivers.ipsec.IPsecVPNDriver:default

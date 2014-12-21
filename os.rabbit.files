@@ -1,0 +1,34 @@
+{/etc/neutron/neutron.conf}
+[DEFAULT]
+rabbit_host = controller
+rpc_backend = rabbit
+rabbit_password = admin
+{/etc/cinder/cinder.conf}
+[DEFAULT]
+rabbit_host = controller
+rpc_backend = rabbit
+rabbit_password = admin
+{/etc/heat/heat.conf}
+[DEFAULT]
+rabbit_password = admin
+rpc_backend = rabbit
+rabbit_host = controller
+{/etc/glance/glance-registry.conf}
+[DEFAULT]
+rpc_backend = rabbit
+rabbit_host = controller
+{/etc/glance/glance-api.conf}
+[DEFAULT]
+rpc_backend = rabbit
+rabbit_host = controller
+{/etc/nova/nova.conf}
+[DEFAULT]
+rabbit_host = controller
+rpc_backend = rabbit
+rabbit_password = admin
+{/etc/ceilometer/ceilometer.conf}
+[DEFAULT]
+rabbit_host = controller
+rpc_backend = rabbit
+rabbit_password = admin
+{/etc/keystone/keystone.conf}

@@ -1,0 +1,87 @@
+{/etc/glance/glance-registry.conf}
+[DEFAULT]
+verbose = True
+bind_host = 0.0.0.0
+bind_port = 9191
+log_file = /var/log/glance/registry.log
+backlog = 4096
+api_limit_max = 1000
+limit_param_default = 25
+rabbit_use_ssl = false
+rabbit_userid = guest
+rabbit_password = guest
+rabbit_virtual_host = /
+rabbit_notification_exchange = glance
+rabbit_notification_topic = notifications
+rabbit_durable_queues = False
+qpid_notification_exchange = glance
+qpid_notification_topic = notifications
+qpid_hostname = controller
+qpid_port = 5672
+qpid_username =
+qpid_password =
+qpid_sasl_mechanisms =
+qpid_reconnect_timeout = 0
+qpid_reconnect_limit = 0
+qpid_reconnect_interval_min = 0
+qpid_reconnect_interval_max = 0
+qpid_reconnect_interval = 0
+qpid_heartbeat = 5
+qpid_protocol = tcp
+qpid_tcp_nodelay = True
+[paste_deploy]
+flavor = keystone
+{/etc/glance/glance-api.conf}
+[DEFAULT]
+notification_driver = messaging
+verbose = True
+default_store = file
+bind_host = 0.0.0.0
+bind_port = 9292
+log_file = /var/log/glance/api.log
+backlog = 4096
+registry_host = 0.0.0.0
+registry_port = 9191
+registry_client_protocol = http
+rabbit_port = 5672
+rabbit_use_ssl = false
+rabbit_userid = guest
+rabbit_virtual_host = /
+rabbit_notification_exchange = glance
+rabbit_notification_topic = notifications
+rabbit_durable_queues = False
+qpid_notification_exchange = glance
+qpid_notification_topic = notifications
+qpid_hostname = controller
+qpid_port = 5672
+qpid_username =
+qpid_password =
+qpid_sasl_mechanisms =
+qpid_reconnect_timeout = 0
+qpid_reconnect_limit = 0
+qpid_reconnect_interval_min = 0
+qpid_reconnect_interval_max = 0
+qpid_reconnect_interval = 0
+qpid_heartbeat = 5
+qpid_protocol = tcp
+qpid_tcp_nodelay = True
+delayed_delete = False
+scrub_time = 43200
+scrubber_datadir = /var/lib/glance/scrubber
+image_cache_dir = /var/lib/glance/image-cache/
+[keystone_authtoken]
+revocation_cache_time = 10
+[paste_deploy]
+flavor = keystone
+[glance_store]
+default_store = file
+filesystem_store_datadir = /var/lib/glance/images/
+swift_store_auth_version = 2
+swift_store_auth_address = 127.0.0.1:5000/v2.0/
+swift_store_user = jdoe:jdoe
+swift_store_key = a86850deb2742ec3cb41518e26aa2d89
+swift_store_container = glance
+swift_store_create_container_on_put = False
+swift_store_large_object_size = 5120
+swift_store_large_object_chunk_size = 200
+swift_enable_snet = False

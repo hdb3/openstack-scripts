@@ -1,0 +1,36 @@
+{/etc/nova/nova.conf}
+[DEFAULT]
+my_ip = nova
+notification_driver = ceilometer.compute.nova_notifier
+dhcpbridge_flagfile=/etc/nova/nova.conf
+novncproxy_base_url = http://controller:6080/vnc_auto.html
+dhcpbridge=/usr/bin/nova-dhcpbridge
+logdir=/var/log/nova
+firewall_driver = nova.virt.firewall.NoopFirewallDriver
+state_path=/var/lib/nova
+security_group_api = neutron
+lock_path=/var/lock/nova
+vnc_enabled = True
+force_dhcp_release=True
+libvirt_use_virtio_for_bridges=True
+vncserver_listen = 0.0.0.0
+verbose=True
+network_api_class = nova.network.neutronv2.api.API
+api_paste_config=/etc/nova/api-paste.ini
+vncserver_proxyclient_address = nova
+enabled_apis=osapi_compute,metadata
+notify_on_state_change = vm_and_task_state
+linuxnet_interface_driver = nova.network.linux_net.LinuxOVSInterfaceDriver
+instance_usage_audit = True
+instance_usage_audit_period = hour
+verbose = True
+[glance]
+host = controller
+[neutron]
+admin_tenant_name = service
+admin_password = admin
+service_metadata_proxy = True
+url = http://controller:9696
+admin_auth_url = http://controller:35357/v2.0
+metadata_proxy_shared_secret = admin
+admin_username = neutron
