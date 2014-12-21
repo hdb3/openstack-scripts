@@ -14,7 +14,6 @@ vnc_enabled = True
 force_dhcp_release=True
 libvirt_use_virtio_for_bridges=True
 vncserver_listen = 0.0.0.0
-verbose=True
 network_api_class = nova.network.neutronv2.api.API
 api_paste_config=/etc/nova/api-paste.ini
 vncserver_proxyclient_address = nova
@@ -23,7 +22,9 @@ notify_on_state_change = vm_and_task_state
 linuxnet_interface_driver = nova.network.linux_net.LinuxOVSInterfaceDriver
 instance_usage_audit = True
 instance_usage_audit_period = hour
-verbose = True
+novncproxy_base_url = http://127.0.0.1:6080/vnc_auto.html
+metadata_host = 10.30.65.202
+dns_server=8.8.8.8
 [glance]
 host = controller
 [neutron]
@@ -34,3 +35,4 @@ url = http://controller:9696
 admin_auth_url = http://controller:35357/v2.0
 metadata_proxy_shared_secret = admin
 admin_username = neutron
+

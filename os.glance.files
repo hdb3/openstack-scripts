@@ -1,6 +1,5 @@
 {/etc/glance/glance-registry.conf}
 [DEFAULT]
-verbose = True
 bind_host = 0.0.0.0
 bind_port = 9191
 log_file = /var/log/glance/registry.log
@@ -34,7 +33,6 @@ flavor = keystone
 {/etc/glance/glance-api.conf}
 [DEFAULT]
 notification_driver = messaging
-verbose = True
 default_store = file
 bind_host = 0.0.0.0
 bind_port = 9292
