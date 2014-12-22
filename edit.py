@@ -98,7 +98,7 @@ class Editor:
         scripts=Editor("script")
         print "Processing filename: ",filename
         try:
-            if (os.path.exists(filename)):
+            if (not zero and os.path.exists(filename)):
                 infile= open(filename,'r')
                 instring=infile.read()
                 infile.close()
@@ -106,7 +106,7 @@ class Editor:
                 if (dump):
                     scripts.dump()
             else:
-                if (verbose):
+                if (not zero and verbose):
                     print "Config file <" + filename + "> does not exist: creating it."
                 scripts.parse([])
             edits, additions = scripts.calculate_delta(filename,self.fields)
