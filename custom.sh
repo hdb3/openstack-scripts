@@ -1,3 +1,4 @@
-#!/bin/bash
-export EXTERNAL_IF=p2p1
-export MY_IP=10.30.65.201
+EXTERNAL_IF=p2p1
+export EXTERNAL_IF
+MY_IP=10.30.65.201
+export MY_IP
