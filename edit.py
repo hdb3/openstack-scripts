@@ -117,6 +117,10 @@ class Editor:
                         while (os.path.exists(filename + "." + str(n))):
                             n += 1
                         os.rename(filename,filename + "." + str(n))
+                    elif (not os.path.exists(os.path.dirname(filename)) ):
+                        if (verbose):
+                            print "Making new directory for: ",filename
+                        os.makedirs(os.path.dirname(filename))
                     out_file_path = filename
                 else:
                     out_file_path = "tmp/"+filename
