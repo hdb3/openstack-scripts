@@ -2,6 +2,7 @@
 echo "This installer assumes that the ubuntu cloudstack packages are already installed and up-to-date."
 read -t 10 -n 1 c
 source custom.sh &&
+sudo ./check-dns.sh $MY_IP $DB_IP &&
 source address-fix.template.sh $MY_IP > /tmp/address-fix.files &&
 ./address-fix.sh /tmp/address-fix.files &&
 sudo service mysql restart &&
@@ -14,7 +15,6 @@ tar zxf content.tgz &&
 sudo ./edit.py -v total.files  &&
 sudo ./edit.py -w total.files  &&
 sudo rabbitmqctl change_password guest admin &&
-sudo ./check-dns.sh $MY_IP $DB_IP &&
 ./config-openvswitch.sh $EXTERNAL_IF &&
 ./lvm.sh
 ./build-db_sync.sh | bash -v &&
