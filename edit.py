@@ -178,9 +178,9 @@ class Editor:
             n_ln, n_value = self.fields[(file,section,name)]
             if (verbose):
                 if ( value == n_value):
-                    print "*** Warning: repeated values for field <" + file + "/" + name + ">: '" + value + "'"
+                    print "*** Warning: repeated values at lines " , self.ln , "," , n_ln , "for field <" + file + ": [" + section + "]:" + name + ">: '" + value + "'"
                 else:
-                    print "*** Warning: conflicting values for field <" + file + "/" + name + ">: /" + value + "/" + n_value + "/"
+                    print "*** Warning: conflicting values at lines " , self.ln , "," , n_ln , "for field <" + file + ": [" + section + "]:" + name + ">: /" + value + "/" + n_value + "/"
 
         self.fields[(file,section,name)] = (self.ln, value)
         (ln,fields) = self.sections[file,section]
