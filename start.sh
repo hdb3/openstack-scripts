@@ -7,6 +7,7 @@ tar zxf content.tgz &&
 ./files.py total.txt total.files &&
 # ./sql.sh &&
 ./filter.sh total.txt > total.sh &&
+sudo ./edit.py -v total.files  &&
 sudo ./edit.py -w total.files  &&
 ./address-fix.sh &&
 sudo service mysql restart &&
