@@ -90,6 +90,10 @@ function IMAGE {
  echo "glance image-create --name $1 --file $2 --disk-format $3 --container-format $4 --is-public True --progress $AND"
 }
 
+function NETIMAGE {
+ echo "glance image-create --name $1 --copy-from $2 --disk-format $3 --container-format $4 --is-public True --progress $AND"
+}
+
 # glance image-list
 # IMAGE-LIST
 function IMAGE-LIST {
@@ -100,9 +104,9 @@ function IMAGE-LIST {
 # SUBNET ext-net ext-subnet --allocation-pool start=10.0.6.2,end=10.0.6.50 --disable-dhcp --gateway 10.0.6.1 10.0.6.0/24
 function SUBNET {
 if [[ $# > 5 ]] ; then
- echo "neutron subnet-create $1 --name $2 --enable-dhcp --gateway $3 --allocation-pool start=$5,end=$6 $4 $AND"
+ echo "neutron subnet-create $1 --name $2 --dns-nameserver 8.8.8.8 --enable-dhcp --gateway $3 --allocation-pool start=$5,end=$6 $4 $AND"
 else
- echo "neutron subnet-create $1 --name $2 --enable-dhcp --gateway $3 $4 $AND"
+ echo "neutron subnet-create $1 --name $2 --dns-nameserver 8.8.8.8 --enable-dhcp --gateway $3 $4 $AND"
 fi
 }
 
