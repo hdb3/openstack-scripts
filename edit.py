@@ -79,7 +79,7 @@ class Editor:
                 name = line[:pos].strip()
                 value = line[pos+1:].strip()
                 self.do_field(name,value)
-    
+
             else:            # parse something else...
                 pass
                 # print "Something else...: ["  + line + "]"
@@ -167,7 +167,7 @@ class Editor:
             self.do_section()
         # if ( (file,section,name) not in self.fields ):
             # warnings.warn("file,section,name) not in self.fields (" + file + "|" + section + "|" + name + ")")
-        self.fields[(file,section,name)] = self.ln
+        self.fields[(file,section,name)] = (self.ln, value)
         (ln,fields) = self.sections[file,section]
         fields.add(name)
         self.sections[file,section] = ln,fields
@@ -184,14 +184,18 @@ class Editor:
         additions={}
         if (verbose):
             print "  Calculating deltas for ", filename
-        for ((file,section,name),d_ln) in deltas.items():
+        for ((file,section,name), (d_ln, d_value)) in deltas.items():
             if (filename != file):
                 continue
             if (("",section,name) in self.fields):
-                line = self.fields[("",section,name)]
-                if (verbose):
-                    print "    Replacing entry for", name, "in section [" + section + "]"
-                edits.append((section,name,line,d_ln,True))
+                line, value = self.fields[("",section,name)]
+                if ( value == d_value):
+                    if (verbose):
+                        print "    Ignoring duplicate entry for", name, " = ", value, "in section [" + section + "]"
+                else:
+                    if (verbose):
+                        print "    Replacing entry for", name, "in section [" + section + "]"
+                    edits.append((section,name,line,d_ln,True))
             elif(("",section) in self.sections):
                 line,fields = self.sections[("",section)]
                 if (verbose):
