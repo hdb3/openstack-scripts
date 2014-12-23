@@ -16,9 +16,6 @@ sudo rabbitmqctl change_password guest admin &&
 sudo ./check-dns.sh &&
 ./config-openvswitch.sh $EXTERNAL_IF &&
 ./lvm.sh
-./build-db_sync.sh > db_sync &&
-source db_sync &&
-./build-openstack.sh > openstack &&
-source openstack &&
-./build-restart.sh > restart &&
-source ./restart
+./build-db_sync.sh | bash -v &&
+./build-openstack.sh | bash -v &&
+./build-restart.sh | bash -v
