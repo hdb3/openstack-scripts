@@ -1,6 +1,7 @@
 #!/bin/bash -v
 echo "This installer assumes that the ubuntu cloudstack packages are already installed and up-to-date."
 read -t 10 -n 1 c
+source custom.sh &&
 # sudo bash openstack.apt.sh &&
 tar zxf content.tgz &&
 ./build-script.sh &&
@@ -13,15 +14,11 @@ sudo ./edit.py -w total.files  &&
 sudo service mysql restart &&
 sudo rabbitmqctl change_password guest admin &&
 sudo ./check-dns.sh &&
-./config-openvswitch.sh &&
+./config-openvswitch.sh $EXTERNAL_IF &&
 ./lvm.sh
 ./build-db_sync.sh > db_sync &&
 source db_sync &&
 ./build-openstack.sh > openstack &&
 source openstack &&
-#neutron subnet-update demo-subnet --enable_dhcp True &&
-#neutron subnet-update demo-subnet --dns-nameserver 8.8.8.8 &&
-#neutron subnet-update ext-subnet --enable_dhcp True &&
-#neutron subnet-update ext-subnet --dns-nameserver 8.8.8.8 &&
 ./build-restart.sh > restart &&
 source ./restart
