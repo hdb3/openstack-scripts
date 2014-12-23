@@ -56,9 +56,10 @@ class Editor:
             pass
         else:
             c = line[0]
-            # parse a filename
+            # parse a source filename
             if (line.startswith("<|")):
                 filename = line[2:line.index('|>')].strip()
+                self.current_source_filename = filename
                 if (verbose):
                     print "input source file is:",filename
             # parse a filename
@@ -171,6 +172,16 @@ class Editor:
             self.do_section()
         # if ( (file,section,name) not in self.fields ):
             # warnings.warn("file,section,name) not in self.fields (" + file + "|" + section + "|" + name + ")")
+
+        # duplicate check...
+        if ((file,section,name) in self.fields):
+            n_ln, n_value = self.fields[(file,section,name)]
+            if (verbose):
+                if ( value == n_value):
+                    print "*** Warning: repeated values for field <" + file + "/" + name + ">: '" + value + "'"
+                else:
+                    print "*** Warning: conflicting values for field <" + file + "/" + name + ">: /" + value + "/" + n_value + "/"
+
         self.fields[(file,section,name)] = (self.ln, value)
         (ln,fields) = self.sections[file,section]
         fields.add(name)
