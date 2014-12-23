@@ -98,7 +98,7 @@ class Editor:
         scripts=Editor("script")
         print "Processing filename: ",filename
         try:
-            if (os.path.exists(filename)):
+            if (not zero and os.path.exists(filename)):
                 infile= open(filename,'r')
                 instring=infile.read()
                 infile.close()
@@ -106,7 +106,7 @@ class Editor:
                 if (dump):
                     scripts.dump()
             else:
-                if (verbose):
+                if (not zero and verbose):
                     print "Config file <" + filename + "> does not exist: creating it."
                 scripts.parse([])
             edits, additions = scripts.calculate_delta(filename,self.fields)
@@ -229,13 +229,18 @@ argparser.add_argument('infile', nargs='?', type=argparse.FileType('r'),  defaul
 argparser.add_argument('outfile', nargs='?', type=argparse.FileType('w'), default=sys.stdout)
 argparser.add_argument('-v', '--verbose', action='store_true')
 argparser.add_argument('-d', '--dump', action='store_true', help='dump the symbol tables')
+argparser.add_argument('-z', '--zero', action='store_true', help='Build new config files without reading existing')
 argparser.add_argument('-w', '--write', action='store_true', help='force direct updates to files, a backup copy will be made...')
 args=argparser.parse_args()
 input=args.infile
 output=args.outfile
 verbose=args.verbose
 dump=args.dump
+zero=args.zero
 write_direct=args.write
+if ( zero and write_direct ):
+    sys.stderr.write("zero and write options are not compatible\n")
+    sys.exit()
 
 if (input.isatty()):
     sys.stderr.write("No input file specified and input is not a pipe!\n")

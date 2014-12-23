@@ -36,3 +36,6 @@ admin_auth_url = http://controller:35357/v2.0
 metadata_proxy_shared_secret = admin
 admin_username = neutron
 
+{/etc/nova/nova-compute.conf}
+[libvirt]
+virt_type = qemu

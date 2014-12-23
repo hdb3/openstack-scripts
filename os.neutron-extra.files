@@ -1,0 +1,41 @@
+{/etc/neutron/plugins/ml2/ml2_conf.ini}
+[ovs]
+enable_tunneling = True
+local_ip = 127.0.0.1
+bridge_mappings = external:br-ex
+[ml2_type_flat]
+flat_networks = external
+[agent]
+tunnel_types = gre
+[ml2_type_gre]
+tunnel_id_ranges = 1:1000
+[ml2]
+type_drivers = flat,gre
+tenant_network_types = gre
+mechanism_drivers = openvswitch
+[securitygroup]
+firewall_driver = neutron.agent.linux.iptables_firewall.OVSHybridIptablesFirewallDriver
+enable_ipset = True
+enable_security_group = True
+{/etc/neutron/l3_agent.ini}
+[DEFAULT]
+interface_driver = neutron.agent.linux.interface.OVSInterfaceDriver
+use_namespaces = True
+external_network_bridge = br-ex
+{/etc/neutron/dhcp_agent.ini}
+[DEFAULT]
+dhcp_driver = neutron.agent.linux.dhcp.Dnsmasq
+dnsmasq_config_file = /etc/neutron/dnsmasq-neutron.conf
+interface_driver = neutron.agent.linux.interface.OVSInterfaceDriver
+use_namespaces = True
+{/etc/neutron/metadata_agent.ini}
+[DEFAULT]
+admin_user = neutron
+admin_password = admin
+admin_tenant_name = service
+auth_url = http://controller:5000/v2.0
+auth_region = regionOne
+metadata_proxy_shared_secret = admin
+nova_metadata_ip = controller
+{/etc/neutron/dnsmasq-neutron.conf}
+dhcp-option-force=26,1454
