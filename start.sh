@@ -3,7 +3,7 @@ echo "This installer assumes that the ubuntu cloudstack packages are already ins
 read -t 10 -n 1 c
 source custom.sh &&
 sudo ./check-dns.sh $MY_IP $DB_IP &&
-source address-fix.template.sh $MY_IP > /tmp/address-fix.files &&
+source address-fix-template.sh $MY_IP > /tmp/address-fix.files &&
 ./address-fix.sh /tmp/address-fix.files &&
 sudo service mysql restart &&
 # sudo bash openstack.apt.sh &&
