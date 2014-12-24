@@ -114,22 +114,21 @@ class Editor:
             if (edits or additions):
                 if(write_direct):
                     if (os.path.exists(filename)):
-                        n=0
-                        while (os.path.exists(filename + "." + str(n))):
-                            n += 1
-                        os.rename(filename,filename + "." + str(n))
+                        out = open(filename,'r+')
+                        out.truncate(0)
                     elif (not os.path.exists(os.path.dirname(filename)) ):
                         if (verbose):
                             print "Making new directory for: ",filename
                         os.makedirs(os.path.dirname(filename))
-                    out_file_path = filename
+                        out = open(filename,'w')
                 else:
                     out_file_path = "tmp/"+filename
                     out_file_dir = os.path.dirname(out_file_path)
                     if (not os.path.exists(out_file_dir)):
                         # create the tmp directories
                         os.makedirs(out_file_dir)
-                with open(out_file_path,'w') as outfile:
+                    out = open(out_file_path,'w')
+                with out as outfile:
                     mark=0
                     for section,name,line,d_ln,delete in edits:
                         while (mark<line):
