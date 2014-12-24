@@ -108,7 +108,7 @@ else:
     sys.stderr.write("over-writing input file: " + args.infile.name + "\n")
     name = args.infile.name
     input.close()
-    output = open(name,'a')
+    output = open(name,'r+')
     output.truncate(0)
 
 delta=Editor()
