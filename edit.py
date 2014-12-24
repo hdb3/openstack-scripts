@@ -206,19 +206,19 @@ class Editor:
                 line, value = self.fields[("",section,name)]
                 if ( value == d_value):
                     if (verbose):
-                        print "    Ignoring duplicate entry for", name, " = ", value, "in section [" + section + "]"
+                        print "    Duplicate [" + section + "] " + name + " = '" + d_value + "'"
                 else:
                     if (verbose):
-                        print "    Replacing entry for", name, "in section [" + section + "]"
+                        print "    Replace [" + section + "] " + name + " = '" + d_value + "' \= '" + value + "'"
                     edits.append((section,name,line,d_ln,True))
             elif(("",section) in self.sections):
                 line,fields = self.sections[("",section)]
                 if (verbose):
-                    print "    Inserting new entry for", name, "in section [" + section + "]"
+                    print "    Insert [" + section + "] " + name + " = '" + d_value + "'"
                 edits.append((section,name,line,d_ln,False))
             else:
                 if (verbose):
-                    print "    Inserting new entry for", name, "in new section [" + section + "]"
+                    print "    Insert [" + section + "] " + name + " = '" + d_value + "' *** New Section"
                 update = (name,d_ln)
                 if (section not in additions):
                     additions[section] = [update]
