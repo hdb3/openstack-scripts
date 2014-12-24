@@ -77,7 +77,7 @@ class Editor:
             this_section = self.fields[section]
             these_fields = sorted(this_section,key=lambda tup: tup[1])
             for (ln,key,value) in these_fields:
-                output.write( '  ' + key + ' = ' + value + '\n')
+                output.write( key + ' = ' + value + '\n')
 
     def execute(self,input):
         self.parse(input.splitlines())
