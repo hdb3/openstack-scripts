@@ -101,12 +101,15 @@ if (input.isatty()):
 
 
 data = input.read()
-input.close()
+
 if ( not args.inplace):
     output=args.outfile
 else:
-    print "over-writing input file: ",args.infile.name
-    args.outfile.close()
-    output = open(args.infile.name, 'w')
+    sys.stderr.write("over-writing input file: " + args.infile.name + "\n")
+    name = args.infile.name
+    input.close()
+    output = open(name,'a')
+    output.truncate(0)
+
 delta=Editor()
 delta.execute(data)
