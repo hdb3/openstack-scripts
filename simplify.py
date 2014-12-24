@@ -57,7 +57,7 @@ class Editor:
         for (section, (s_ln,fields)) in self.sections.items():
             print '[' + section + ']'
             for (ln,key,value) in self.fields[section]:
-                print '  ' + key + ' = ' + value
+                print key + ' = ' + value
 
     def sdump(self):
         sections = sorted(self.fields.keys())
