@@ -263,6 +263,3 @@ if (input.isatty()):
 
 delta=Editor("delta")
 result = delta.execute(input.read())
-if (result):
-    for line in result:
-        output.write(line + '\n')
