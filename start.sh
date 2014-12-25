@@ -18,7 +18,7 @@ sudo ./edit.py -v total.files  &&
 sudo ./edit.py -w total.files  &&
 sudo rabbitmqctl change_password guest admin &&
 ./config-openvswitch.sh $EXTERNAL_IF &&
-./lvm.sh $LVM_DEV &&
+# ./lvm.sh $LVM_DEV && ## doesnt work and don't know why - OK if given on command line...
 ./build-db_sync.sh | bash -v &&
 ./build-openstack.sh | bash -v &&
 ./build-restart.sh | bash -v
