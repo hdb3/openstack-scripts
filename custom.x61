@@ -1,3 +1,4 @@
 export EXTERNAL_IF=wlan0
 export MY_IP=10.0.100.2
 export DB_IP=127.0.0.1
+export LVM_DEV="/dev/sda6"

@@ -1,3 +1,3 @@
 #!/bin/bash
-sudo pvcreate /dev/sda
-sudo vgcreate ubuntu-vg /dev/sda
+sudo pvcreate $1
+sudo vgcreate ubuntu-vg $1

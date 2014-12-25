@@ -18,7 +18,7 @@ sudo ./edit.py -v total.files  &&
 sudo ./edit.py -w total.files  &&
 sudo rabbitmqctl change_password guest admin &&
 ./config-openvswitch.sh $EXTERNAL_IF &&
-./lvm.sh &&
+./lvm.sh $LVM_DEV &&
 ./build-db_sync.sh | bash -v &&
 ./build-openstack.sh | bash -v &&
 ./build-restart.sh | bash -v
