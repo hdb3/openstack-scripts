@@ -1,3 +1,0 @@
-export EXTERNAL_IF=eth0
-export MY_IP=10.30.66.2
-export DB_IP=127.0.0.1
