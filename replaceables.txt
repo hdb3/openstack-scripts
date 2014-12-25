@@ -50,3 +50,9 @@ compute1 = compute1
 demo-instance1
 controller = controller
 name
+[x61]
+EXTERNAL_NETWORK_GATEWAY = 10.0.100.1
+EXTERNAL_NETWORK_CIDR = 10.0.100.0/24
+FLOATING_IP_START = 10.0.100.100
+FLOATING_IP_END = 10.0.100.200
+INTERFACE_NAME=wlan0

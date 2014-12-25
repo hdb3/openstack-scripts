@@ -3,7 +3,7 @@ from HTMLParser import HTMLParser
 
 LINE_LENGTH = 120
 
-import sys , argparse
+import sys , argparse , platform
 
 class Logger(object):
 
@@ -277,6 +277,7 @@ argparser.add_argument('-c', '--comments', action='store_true', help='Write non-
 argparser.add_argument('-r', '--replaceable', action='store_true', help='Annotate replaceable tokens in code with a leading"$"' )
 argparser.add_argument('-s', '--substitute', action='store_true', help='read a list of substitutions from replaceables.txt' )
 argparser.add_argument('-d', '--debug', action='store_true', help='Dump parsing events to stderr' )
+argparser.add_argument('-n', '--name', help='override the host name used to select replacement  elements' )
 args=argparser.parse_args()
 input=args.infile
 output=args.outfile
@@ -284,18 +285,33 @@ output=args.outfile
 sys.stdout = sys.stderr
 
 parser = MyHTMLParser()
+if (args.name):
+    host = args.name
+else:
+    host = platform.node()
 
 if (args.substitute):
     parser.substitute = True
     repfile = open("replaceables.txt",'r')
     repstring = repfile.read()
     replist = repstring.splitlines()
+    skip = False
     for rep in replist:
-        if (rep.find('=') != -1):
+        if (not rep or rep[0] == '#' ):
+            pass
+        if (rep and rep[0] == '[' ):
+            if (rep.find(']') != -1):
+                pos = rep.index(']')
+                section = rep[1:pos].strip()
+                skip = (section != host)
+                if (not skip):
+                    sys.stderr.write("*** Found customisation section for " + section + "\n")
+        elif (rep.find('=') != -1):
             pos = rep.index('=')
             key = rep[:pos].strip()
             value = rep[pos+1:].strip()
-            parser.substitutions[key] = value
+            if (not skip ):
+                parser.substitutions[key] = value
 
 # if (parser.substitutions):
     # print "using the following substitution table:", parser.substitutions

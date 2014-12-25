@@ -9,7 +9,8 @@ sudo service mysql restart &&
 # sudo bash openstack.apt.sh &&
 tar zxf content.tgz &&
 ./build-script.sh &&
-./files.py total.txt total.files &&
+# ./files.py total.txt total.files &&
+./files.py total.txt | sed -e "/bind-address/ s/10.0.0.11/$DB_IP/g ; s/10.0.0.11/$MY_IP/g" > total.files &&
 # ./sql.sh &&
 ./filter.sh total.txt > total.sh &&
 sudo ./edit.py -v total.files  &&
