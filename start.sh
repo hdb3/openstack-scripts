@@ -4,8 +4,6 @@ echo "It will look for a customisation script named 'custom.<HOST_NAME>"
 read -t 10 -n 1 c
 $( ./set-env.py ) &&
 sudo ./check-dns.sh $MY_IP $DB_IP &&
-source address-fix-template.sh $MY_IP > /tmp/address-fix.files &&
-./address-fix.sh /tmp/address-fix.files &&
 sudo service mysql restart &&
 # sudo bash openstack.apt.sh &&
 tar zxf content.tgz &&
@@ -16,6 +14,8 @@ tar zxf content.tgz &&
 ./filter.sh total.txt > total.sh &&
 sudo ./edit.py -v total.files  &&
 sudo ./edit.py -w total.files  &&
+source address-fix-template.sh $MY_IP > /tmp/address-fix.files &&
+./address-fix.sh /tmp/address-fix.files &&
 sudo rabbitmqctl change_password guest admin &&
 ./config-openvswitch.sh $EXTERNAL_IF &&
 # ./lvm.sh $LVM_DEV && ## doesnt work and don't know why - OK if given on command line...
