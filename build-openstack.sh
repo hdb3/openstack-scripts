@@ -61,9 +61,10 @@ source openstack-utils.sh
 	COMMAND		"neutron	ext-list"
 	EXTNET		ext-net
 	#		network name	subnet name	gateway		CIDR		alloc start	alloc end
-	SUBNET	ext-net		ext-subnet	10.30.65.1      10.30.65.0/24	10.30.65.2	10.30.65.50
+	#  SUBNET	ext-net		ext-subnet	10.30.65.1      10.30.65.0/24	10.30.65.2	10.30.65.50
+	SUBNET	ext-net		ext-subnet	192.168.1.254      192.168.1.0/24	192.168.1.220	192.168.1.239
 	NET		demo-net
-	SUBNET		demo-net	demo-subnet	192.168.1.1	192.168.1.0/24
+	SUBNET		demo-net	demo-subnet	172.16.0.1	172.16.0.0/12
 	ROUTER		demo-router
 	INTERFACE	demo-router	demo-subnet
 	GATEWAY		demo-router	ext-net
