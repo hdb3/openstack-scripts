@@ -1,24 +1,24 @@
-sudo service keystone restart &&
-sudo service glance-registry restart &&
-sudo service glance-api restart &&
-sudo service nova-api restart &&
-sudo service nova-cert restart &&
-sudo service nova-consoleauth restart &&
-sudo service nova-scheduler restart &&
-sudo service nova-conductor restart &&
-sudo service nova-novncproxy restart &&
-sudo service neutron-server restart &&
-sudo service neutron-plugin-openvswitch-agent restart &&
-sudo service neutron-l3-agent restart &&
-sudo service neutron-dhcp-agent restart &&
-sudo service neutron-metadata-agent restart &&
-sudo service nova-compute restart &&
-sudo service neutron-plugin-openvswitch-agent restart &&
-sudo service cinder-scheduler restart &&
-sudo service cinder-api restart &&
-sudo service tgt restart &&
-sudo service cinder-volume restart &&
-sudo service heat-api restart &&
-sudo service heat-api-cfn restart &&
-sudo service heat-engine restart &&
+sudo service keystone restart
+sudo service glance-registry restart
+sudo service glance-api restart
+sudo service nova-api restart
+sudo service nova-cert restart
+sudo service nova-consoleauth restart
+sudo service nova-scheduler restart
+sudo service nova-conductor restart
+sudo service nova-novncproxy restart
+sudo service neutron-server restart
+sudo service neutron-plugin-openvswitch-agent restart
+sudo service neutron-l3-agent restart
+sudo service neutron-dhcp-agent restart
+sudo service neutron-metadata-agent restart
+sudo service nova-compute restart
+sudo service neutron-plugin-openvswitch-agent restart
+sudo service cinder-scheduler restart
+sudo service cinder-api restart
+sudo service tgt restart
+sudo service cinder-volume restart
+sudo service heat-api restart
+sudo service heat-api-cfn restart
+sudo service heat-engine restart
 echo 'Finished...'

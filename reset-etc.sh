@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -e
 if [ "$EUID" -ne 0 ]
   then echo "Please run as root"
   exit 1
@@ -16,7 +16,7 @@ if [ -d /etc.backup/ ]
   exit 1
 fi
 
-cp -r /etc.baseline /etc.tmp &&
-mv /etc /etc.backup &&
-mv /etc.tmp /etc &&
+cp -r /etc.baseline /etc.tmp
+mv /etc /etc.backup
+mv /etc.tmp /etc
 echo "/etc was saved as /etc.backup"
