@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -e
 sudo ovs-vsctl --may-exist add-br br-ex
 sudo ovs-vsctl --may-exist add-port br-ex $1
 sudo ifconfig $1 up
