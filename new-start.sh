@@ -1,7 +1,10 @@
+#!/bin/bash -ev
 echo "This installer assumes that the ubuntu cloudstack packages are already installed and up-to-date."
 echo "It will look for a customisation script named 'custom.<HOST_NAME>"
 read -t 10 -n 1 c
 $( ./set-env.py )
+sudo ./check-dns.sh $MY_IP $DB_IP
+# source address-fix-template.sh $MY_IP | sudo ./edit.py -w -v
 sudo bash -ve edit-conf.sh
 sudo rabbitmqctl change_password guest admin
 # sudo ./check-dns.sh $MY_IP $DB_IP
