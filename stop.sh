@@ -8,5 +8,5 @@ for s in `cat services`
 for project in `cat projects`
     do
         echo "clean log files for $project"
-        sudo truncate -s 0 /var/log/$project
+        sudo truncate -s 0 /var/log/$project/*
     done
