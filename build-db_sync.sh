@@ -1,6 +1,7 @@
 #!/bin/bash
 
 source utils.sh
+set -e
 DBUSER=root
 DBPASS=root
 

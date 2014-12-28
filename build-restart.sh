@@ -1,6 +1,7 @@
 #!/bin/bash
 
 source utils.sh
+set -e
  RESTART keystone
 
  RESTART glance-registry glance-api

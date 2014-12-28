@@ -1,5 +1,6 @@
 #!/bin/bash
 source openstack-utils.sh
+set -e
 
         AUTH
 	TENANT		admin	"Admin Tenant"
