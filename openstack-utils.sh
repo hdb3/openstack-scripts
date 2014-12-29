@@ -20,7 +20,7 @@ echo "unset OS_TENANT_NAME OS_USERNAME OS_PASSWORD OS_AUTH_URL"
 
 function TOKEN_AUTH {
 echo "export OS_SERVICE_TOKEN=\"ADMIN\""
-echo "export OS_SERVICE_ENDPOINT=http://controller:35357/v2.0"
+echo "export OS_SERVICE_ENDPOINT=http://$MY_IP:35357/v2.0"
 }
 
 function TOKEN_UNAUTH {
@@ -63,34 +63,33 @@ function SERVICE {
  echo "keystone service-create --name $1 --type $2 --description \"$3\""
 }
 
-# keystone endpoint-create --service-id $(keystone service-list | awk '/ identity / {print $2}') --publicurl http://controller:5000/v2.0 --internalurl http://controller:5000/v2.0 --adminurl http://controller:35357/v2.0 --region regionOne
+# keystone endpoint-create --service-id $(keystone service-list | awk '/ identity / {print $2}') --publicurl http://$MY_IP:5000/v2.0 --internalurl http://$MY_IP:5000/v2.0 --adminurl http://$MY_IP:35357/v2.0 --region regionOne
 # ENDPOINT regionOne identity 5000/v2.0 5000/v2.0 35357/v2.0
 function ENDPOINT {
-ADDR=controller
 if [[ $# > 4 ]] ; then
- echo "keystone endpoint-create --service-id \$(keystone service-list | awk '/ $2 / {print \$2}') --publicurl http://${ADDR}:${3} --internalurl http://${ADDR}:${4} --adminurl http://${ADDR}:${5} --region $1"
+ echo "keystone endpoint-create --service-id \$(keystone service-list | awk '/ $2 / {print \$2}') --publicurl http://${MY_IP}:${3} --internalurl http://${MY_IP}:${4} --adminurl http://${MY_IP}:${5} --region $1"
 else
- echo "keystone endpoint-create --service-id \$(keystone service-list | awk '/ $2 / {print \$2}') --publicurl http://${ADDR}:${3} --internalurl http://${ADDR}:${3} --adminurl http://${ADDR}:${3} --region $1"
+ echo "keystone endpoint-create --service-id \$(keystone service-list | awk '/ $2 / {print \$2}') --publicurl http://${MY_IP}:${3} --internalurl http://${MY_IP}:${3} --adminurl http://${MY_IP}:${3} --region $1"
 fi
 
 }
 
-# keystone --os-tenant-name admin --os-username admin --os-password admin --os-auth-url http://controller:35357/v2.0 token-get
+# keystone --os-tenant-name admin --os-username admin --os-password admin --os-auth-url http://$MY_IP:35357/v2.0 token-get
 # KADMIN token-get
 function KADMIN {
- echo "keystone --os-tenant-name admin --os-username admin --os-password admin --os-auth-url http://controller:35357/v2.0 $1"
+ echo "keystone --os-tenant-name admin --os-username admin --os-password admin --os-auth-url http://$MY_IP:35357/v2.0 $1"
 }
 
-# keystone --os-tenant-name demo --os-username demo --os-password admin --os-auth-url http://controller:35357/v2.0 token-get
+# keystone --os-tenant-name demo --os-username demo --os-password admin --os-auth-url http://$MY_IP:35357/v2.0 token-get
 # KDEMO token-get
 function KDEMO {
- echo "keystone --os-tenant-name demo --os-username demo --os-password admin --os-auth-url http://controller:35357/v2.0 $1"
+ echo "keystone --os-tenant-name demo --os-username demo --os-password admin --os-auth-url http://$MY_IP:35357/v2.0 $1"
 }
 function KDEMOFAIL {
  echo "echo 'KDEMOFAIL - NO-OP'"
  ##  FIXME - this needs to run  and fail but not error off the script...
  # unset -e
- # echo "keystone --os-tenant-name demo --os-username demo --os-password admin --os-auth-url http://controller:35357/v2.0 $1 || echo Authentication failure expected..."
+ # echo "keystone --os-tenant-name demo --os-username demo --os-password admin --os-auth-url http://$MY_IP:35357/v2.0 $1 || echo Authentication failure expected..."
  # set -e
 }
 
