@@ -6,6 +6,7 @@ $( ./set-env.py )
 # sudo ./check-dns.sh $MY_IP $DB_IP
 # source address-fix-template.sh $MY_IP | sudo ./edit.py -w -v
 ./edit-conf.sh
+sudo rabbitmqctl start_app
 sudo rabbitmqctl change_password guest admin
 # sudo ./check-dns.sh $MY_IP $DB_IP
 ./config-openvswitch.sh $EXTERNAL_IF
