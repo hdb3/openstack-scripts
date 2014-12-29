@@ -4,12 +4,10 @@ echo "echo 'Finished...'"
 }
 
 function ADMINRC {
-# echo "source keystone-env.sh"
 echo "source admin-openrc.sh"
 }
 
 function DEMORC {
-# echo "source keystone-env.sh"
 echo "source demo-openrc.sh"
 }
 

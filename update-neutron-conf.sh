@@ -1,5 +1,5 @@
 #!/bin/bash
-source keystone-env.sh
+source admin-openrc.sh
 SERVICE_TENANT_ID=`keystone tenant-list | awk '/ service / {print $2}'`
 echo "The ID is $SERVICE_TENANT_ID"
 echo "{/etc/neutron/neutron.conf}" > neutron.conf
