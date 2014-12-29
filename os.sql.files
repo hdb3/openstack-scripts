@@ -1,28 +1,28 @@
 {/etc/neutron/neutron.conf}
 [database]
-connection = mysql://neutron:admin@dbhost/neutron
+connection = mysql://neutron:admin@$DB_IP/neutron
 backend = sqlalchemy
 {/etc/cinder/cinder.conf}
 [database]
-connection = mysql://cinder:admin@dbhost/cinder
+connection = mysql://cinder:admin@$DB_IP/cinder
 backend = sqlalchemy
 {/etc/heat/heat.conf}
 [database]
-connection = mysql://heat:admin@dbhost/heat
+connection = mysql://heat:admin@$DB_IP/heat
 backend = sqlalchemy
 {/etc/glance/glance-registry.conf}
 [database]
-connection = mysql://glance:admin@dbhost/glance
+connection = mysql://glance:admin@$DB_IP/glance
 backend = sqlalchemy
 {/etc/glance/glance-api.conf}
 [database]
-connection = mysql://glance:admin@dbhost/glance
+connection = mysql://glance:admin@$DB_IP/glance
 backend = sqlalchemy
 {/etc/nova/nova.conf}
 [database]
-connection = mysql://nova:admin@dbhost/nova
+connection = mysql://nova:admin@$DB_IP/nova
 backend = sqlalchemy
 {/etc/keystone/keystone.conf}
 [database]
-connection = mysql://keystone:admin@dbhost/keystone
+connection = mysql://keystone:admin@$DB_IP/keystone
 backend = sqlalchemy

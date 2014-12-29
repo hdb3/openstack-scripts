@@ -33,9 +33,9 @@ use_namespaces = True
 admin_user = neutron
 admin_password = admin
 admin_tenant_name = service
-auth_url = http://controller:5000/v2.0
+auth_url = http://$MY_IP:5000/v2.0
 auth_region = regionOne
 metadata_proxy_shared_secret = admin
-nova_metadata_ip = controller
+nova_metadata_ip = $MY_IP
 {/etc/neutron/dnsmasq-neutron.conf}
 dhcp-option-force=26,1454

@@ -1,6 +1,6 @@
 {/etc/cinder/cinder.conf}
 [DEFAULT]
-my_ip = 127.0.0.1
+my_ip = $MY_IP
 rootwrap_config = /etc/cinder/rootwrap.conf
 control_exchange = cinder
 api_paste_confg = /etc/cinder/api-paste.ini
@@ -8,7 +8,7 @@ iscsi_helper = tgtadm
 volume_name_template = volume-%s
 volume_group = cinder-volumes
 # volume_group = cinder-vg
-glance_host = controller
+glance_host = $MY_IP
 notification_driver = cinder.openstack.common.notifier.rpc_notifier
 lock_path = /var/lock/cinder
 volumes_dir = /var/lib/cinder/volumes
