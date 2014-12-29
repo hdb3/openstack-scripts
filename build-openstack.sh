@@ -2,7 +2,7 @@
 source openstack-utils.sh
 set -e
 
-        AUTH
+        TOKEN_AUTH
 	TENANT		admin	"Admin Tenant"
 	USER		admin	admin	user@example.com
 	ROLE		admin
@@ -17,26 +17,28 @@ set -e
 
 	SERVICE		keystone	identity	"OpenStack Identity"
 	ENDPOINT	regionOne	identity	"5000/v2.0"	"5000/v2.0"	"35357/v2.0"
+	TOKEN_UNAUTH
 
 #verification..
-	UNAUTH
-	KADMIN		token-get
-	KADMIN		tenant-list
-	KADMIN		user-list
-	KADMIN		role-list
+	# ADMINRC
+	# KADMIN		token-get
+	# KADMIN		tenant-list
+	# KADMIN		user-list
+	# KADMIN		role-list
 
 #verification..
 
-	KDEMO		token-get
-	KDEMO		user-list
-	KADMIN		token-get
-	KADMIN		tenant-list
-	KADMIN		user-list
-	KADMIN		role-list
-	KDEMO		token-get
-	KDEMOFAIL		user-list
-	KADMIN		token-get
-        AUTH
+	# DEMORC
+	# KDEMO		token-get
+	# KDEMO		user-list
+	# KADMIN		token-get
+	# KADMIN		tenant-list
+	# KADMIN		user-list
+	# KADMIN		role-list
+	# KDEMO		token-get
+	# ADMINRC_UNAUTH
+	# KDEMOFAIL		user-list
+	# KADMIN		token-get
 
 	ADMINRC
 	USER		glance	admin

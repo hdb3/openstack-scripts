@@ -8,16 +8,23 @@ function ADMINRC {
 echo "source admin-openrc.sh"
 }
 
-function AUTH {
-echo "export OS_SERVICE_TOKEN=\"ADMIN\""
-echo "export OS_SERVICE_ENDPOINT=http://controller:35357/v2.0"
-echo "export OS_AUTH_URL=http://controller:35357/v2.0"
-
+function DEMORC {
+# echo "source keystone-env.sh"
+echo "source demo-openrc.sh"
 }
 
-function UNAUTH {
-echo "unset OS_SERVICE_TOKEN"
-echo "unset OS_SERVICE_ENDPOINT"
+function RC_UNAUTH {
+echo "unset OS_TENANT_NAME OS_USERNAME OS_PASSWORD OS_AUTH_URL"
+}
+
+
+function TOKEN_AUTH {
+echo "export OS_SERVICE_TOKEN=\"ADMIN\""
+echo "export OS_SERVICE_ENDPOINT=http://controller:35357/v2.0"
+}
+
+function TOKEN_UNAUTH {
+echo "unset OS_SERVICE_TOKEN OS_SERVICE_ENDPOINT"
 }
 
 # keystone tenant-create --name admin --description "Admin Tenant"
@@ -80,7 +87,11 @@ function KDEMO {
  echo "keystone --os-tenant-name demo --os-username demo --os-password admin --os-auth-url http://controller:35357/v2.0 $1"
 }
 function KDEMOFAIL {
- echo "keystone --os-tenant-name demo --os-username demo --os-password admin --os-auth-url http://controller:35357/v2.0 $1"
+ echo "echo 'KDEMOFAIL - NO-OP'"
+ ##  FIXME - this needs to run  and fail but not error off the script...
+ # unset -e
+ # echo "keystone --os-tenant-name demo --os-username demo --os-password admin --os-auth-url http://controller:35357/v2.0 $1 || echo Authentication failure expected..."
+ # set -e
 }
 
 # glance image-create --name "cirros-0.3.3-x86_64" --file cirros-0.3.3-x86_64-disk.img --disk-format qcow2 --container-format bare --is-public True --progress
