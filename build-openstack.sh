@@ -41,6 +41,7 @@ set -e
 	# KADMIN		token-get
 
 	ADMINRC
+	KADMIN		token-get
 	USER		glance	admin
 	ROLE-ADD	glance	service	admin
 	SERVICE		glance	image	"OpenStack Image Service"
