@@ -1,0 +1,21 @@
+{/etc/neutron/neutron.conf}
+[DEFAULT]
+verbose = False
+{/etc/cinder/cinder.conf}
+[DEFAULT]
+verbose = False
+{/etc/heat/heat.conf}
+[DEFAULT]
+verbose = False
+{/etc/glance/glance-registry.conf}
+[DEFAULT]
+verbose = False
+{/etc/glance/glance-api.conf}
+[DEFAULT]
+verbose = False
+{/etc/nova/nova.conf}
+[DEFAULT]
+verbose = False
+{/etc/keystone/keystone.conf}
+[DEFAULT]
+verbose = False
