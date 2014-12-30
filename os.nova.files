@@ -37,4 +37,4 @@ admin_username = neutron
 
 {/etc/nova/nova-compute.conf}
 [libvirt]
-virt_type = qemu
+virt_type = kvm
