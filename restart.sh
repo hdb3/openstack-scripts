@@ -8,7 +8,7 @@ for s in `cat services`
 for project in `cat projects`
     do
         echo "clean log files for $project"
-        sudo rm -rf /var/log/$project/*
+        sudo rm -rfv /var/log/$project/*
     done
 
 for s in `cat services`
