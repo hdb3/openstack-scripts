@@ -130,14 +130,17 @@ class Editor:
                         os.makedirs(out_file_dir)
                     outfile = open(out_file_path,'w')
                 if (True):
+                    if (verbose):
+                        print edits
                     mark=0
                     for section,name,line,d_ln,delete in edits:
-                        while (mark<line):
+                        while (line > mark):
                             outfile.write(scripts.file[mark] + "\n")
                             mark += 1
-                        if (mark < len(scripts.file) and not delete):
-                            outfile.write(scripts.file[mark] + "\n")
-                        mark += 1
+                        if (mark == line):
+                            if (not delete and mark<len(scripts.file)):
+                                outfile.write(scripts.file[mark] + "\n")
+                            mark += 1
                         outfile.write(self.file[d_ln] + "\n")
                     while (mark<len(scripts.file)):
                         outfile.write(scripts.file[mark] + "\n")
