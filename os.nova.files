@@ -22,7 +22,7 @@ notify_on_state_change = vm_and_task_state
 linuxnet_interface_driver = nova.network.linux_net.LinuxOVSInterfaceDriver
 instance_usage_audit = True
 instance_usage_audit_period = hour
-metadata_host = 127.0.0.1
+metadata_host = $MY_IP
 dns_server=8.8.8.8
 [glance]
 host = $MY_IP
