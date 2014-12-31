@@ -1,8 +1,8 @@
 #!/bin/bash -ev
 echo "This installer assumes that the ubuntu cloudstack packages are already installed and up-to-date."
 echo "It will look for a customisation script named 'custom.<HOST_NAME>"
-sudo systemctl start mariadb
-sudo systemctl start rabbitmq-server
+#next line should not be neccessary - but.....
+sudo systemctl restart rabbitmq-server
 sudo rabbitmqctl change_password guest admin
 $( ./set-env.py )
 ./config-openvswitch.sh $EXTERNAL_IF
