@@ -1,7 +1,6 @@
 #!/bin/bash -ev
 echo "This installer assumes that the ubuntu cloudstack packages are already installed and up-to-date."
 echo "It will look for a customisation script named 'custom.<HOST_NAME>"
-read -t 10 -n 1 c
 ./stop.sh
 $( ./set-env.py )
 # sudo ./check-dns.sh $MY_IP $DB_IP
@@ -16,3 +15,4 @@ sed -e "s/\$MY_IP/$MY_IP/g" < admin-openrc.sh.template > admin-openrc.sh
 sed -e "s/\$MY_IP/$MY_IP/g" < demo-openrc.sh.template > demo-openrc.sh
 ./build-db_sync.sh | bash -ve
 ./build-openstack.sh | bash -ve
+./restart.sh
