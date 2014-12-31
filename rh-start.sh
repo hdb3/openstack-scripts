@@ -5,8 +5,8 @@ sudo systemctl start mariadb
 sudo systemctl start rabbitmq-server
 sudo rabbitmqctl change_password guest admin
 $( ./set-env.py )
-./edit-conf.sh
 ./config-openvswitch.sh $EXTERNAL_IF
+./edit-conf.sh
 sed -e "s/\$MY_IP/$MY_IP/g" < admin-openrc.sh.template > admin-openrc.sh
 sed -e "s/\$MY_IP/$MY_IP/g" < demo-openrc.sh.template > demo-openrc.sh
 ./build-db_sync.sh | bash -ve
