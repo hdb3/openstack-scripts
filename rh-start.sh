@@ -6,6 +6,7 @@ sudo systemctl restart rabbitmq-server
 sudo rabbitmqctl change_password guest admin
 $( ./set-env.py )
 ./config-openvswitch.sh $EXTERNAL_IF
+sudo ln -s /etc/neutron/plugins/ml2/ml2_conf.ini /etc/neutron/plugin.ini
 ./edit-conf.sh
 sed -e "s/\$MY_IP/$MY_IP/g" < admin-openrc.sh.template > admin-openrc.sh
 sed -e "s/\$MY_IP/$MY_IP/g" < demo-openrc.sh.template > demo-openrc.sh
