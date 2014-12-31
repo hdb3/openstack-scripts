@@ -10,7 +10,6 @@ nova_admin_tenant_id = $SERVICE_TENANT_ID
 service_plugins = router
 nova_url = http://$MY_IP:8774/v2
 nova_admin_password = admin
-lock_path = /var/lock/neutron
 core_plugin = ml2
 [agent]
 root_helper = sudo /usr/bin/neutron-rootwrap /etc/neutron/rootwrap.conf

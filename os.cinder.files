@@ -10,5 +10,4 @@ volume_group = cinder-volumes
 # volume_group = cinder-vg
 glance_host = $MY_IP
 notification_driver = cinder.openstack.common.notifier.rpc_notifier
-lock_path = /var/lock/cinder
 volumes_dir = /var/lib/cinder/volumes
