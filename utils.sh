@@ -13,7 +13,7 @@ function SU {
 function RESTART {
 for arg
 do
-    echo "sudo service $arg restart"
+    echo "sudo service ${SERVICE_PREFIX}$arg restart"
 done
 }
 
