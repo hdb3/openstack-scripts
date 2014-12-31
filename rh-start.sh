@@ -11,5 +11,6 @@ sudo ln -s /etc/neutron/plugins/ml2/ml2_conf.ini /etc/neutron/plugin.ini
 sed -e "s/\$MY_IP/$MY_IP/g" < admin-openrc.sh.template > admin-openrc.sh
 sed -e "s/\$MY_IP/$MY_IP/g" < demo-openrc.sh.template > demo-openrc.sh
 ./build-db_sync.sh | bash -ve
+./rh-restart.sh
 ./build-openstack.sh | bash -ve
 ./rh-restart.sh
