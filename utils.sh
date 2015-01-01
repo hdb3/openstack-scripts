@@ -1,4 +1,40 @@
 #service lists...
+if [[ "XXX" == "XXX${OS_ENV}" ]]
+  then
+    echo "oops, \$OS_ENV not set, can't continue ($0)"
+    exit 1
+fi
+
+case ${OS_ENV} in
+
+DEB)
+    function _service {
+      cmd=$1 ; shift
+      for arg
+      do
+        echo "sudo service $arg $cmd"
+      done
+    } ;;
+
+YUM)
+    function _service {
+      cmd=$1 ; shift
+      for arg
+      do
+        if [[ $arg == neutron* ]]
+        then
+          args="$args $arg"
+        else
+          args="$args openstack-${arg}"
+        fi
+      done
+      echo "sudo systemctl $cmd $args"
+    } ;;
+
+*  ) echo "oops, unknown setting for \$OS_ENV not set, can't continue ($OS_ENV)"
+     exit 1 ;;
+
+esac
 
 function END {
 echo "echo 'Finished...'"
@@ -24,21 +60,21 @@ MYSQL "GRANT ALL PRIVILEGES ON $1.* TO '$2'@'%'   IDENTIFIED BY '$3';"
 }
 
 function _RESTART {
-PREFIX=$1
-shift
-for arg
-do
-    echo "sudo service ${PREFIX}$arg restart"
-done
+    _service restart $@
 }
 
+KEYSTONE_SERVICES="keystone"
+GLANCE_SERVICES="glance-registry glance-api"
+NOVA_SERVICES="nova-api nova-cert nova-consoleauth nova-scheduler nova-conductor nova-novncproxy"
+NEUTRON_SERVICES="neutron-server neutron-plugin-openvswitch-agent neutron-l3-agent neutron-dhcp-agent neutron-metadata-agent neutron-plugin-openvswitch-agent"
+CINDER_SERVICES="cinder-scheduler cinder-api tgt cinder-volume"
+HEAT_SERVICES="heat-api heat-api-cfn heat-engine"
+
+ALL="NOVA NEUTRON GLANCE CINDER HEAT"
 function RESTART {
-case $1 in
-KEYSTONE) _RESTART ${SERVICE_PREFIX} keystone ;;
-GLANCE) _RESTART ${SERVICE_PREFIX} glance-registry glance-api ;;
-NOVA) _RESTART ${SERVICE_PREFIX} nova-api nova-cert nova-consoleauth nova-scheduler nova-conductor nova-novncproxy ;;
-NEUTRON) _RESTART "" neutron-server nova-api neutron-plugin-openvswitch-agent neutron-l3-agent neutron-dhcp-agent neutron-metadata-agent nova-compute neutron-plugin-openvswitch-agent ;;
-CINDER) _RESTART ${SERVICE_PREFIX} cinder-scheduler cinder-api tgt cinder-volume ;;
-HEAT) _RESTART ${SERVICE_PREFIX} heat-api heat-api-cfn heat-engine ;;
-esac
+  for arg
+    do
+       SERVICES="${arg}_SERVICES"
+      _RESTART "${!SERVICES}"
+    done
 }

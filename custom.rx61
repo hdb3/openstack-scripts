@@ -1,4 +1,4 @@
 export EXTERNAL_IF=enp0s25
 export MY_IP=192.168.1.33
 export DB_IP=127.0.0.1
-export SERVICE_PREFIX=openstack-
+export OS_ENV=YUM
