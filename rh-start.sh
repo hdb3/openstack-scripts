@@ -9,6 +9,7 @@ sed -e "s/\$MY_IP/$MY_IP/g" < admin-openrc.sh.template > admin-openrc.sh
 sed -e "s/\$MY_IP/$MY_IP/g" < demo-openrc.sh.template > demo-openrc.sh
 ./build-db_sync.sh | bash -ve
 ./service-restart.sh KEYSTONE | bash -ve
+! read -t 2 -i "allow keystone to start"
 ./keystone-setup.sh | bash -ve
 ./update-neutron-conf.sh
 ./service-restart.sh | bash -ve
