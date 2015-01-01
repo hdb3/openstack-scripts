@@ -67,7 +67,7 @@ function _RESTART {
 
 KEYSTONE_SERVICES="keystone"
 GLANCE_SERVICES="glance-registry glance-api"
-NOVA_SERVICES="nova-api nova-cert nova-consoleauth nova-scheduler nova-conductor nova-novncproxy nova-compute"
+NOVA_SERVICES="nova-api nova-cert nova-consoleauth nova-scheduler nova-console nova-novncproxy nova-compute"
 CINDER_SERVICES="cinder-scheduler cinder-api cinder-volume"
 HEAT_SERVICES="heat-api heat-api-cfn heat-engine"
 NEUTRON_SERVICES="neutron-server neutron-l3-agent neutron-dhcp-agent neutron-metadata-agent"
