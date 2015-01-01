@@ -55,8 +55,8 @@ python-saharaclient
 python-swiftclient
 python-troveclient
 rabbitmq-server
-rsync
 sysfsutils
 targetcli
-which
-xfsprogs
+wireshark
+net-tools
+nmap
