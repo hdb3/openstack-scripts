@@ -2,7 +2,6 @@
 source openstack-utils.sh
 set -e
 
-	TOKEN_UNAUTH
 	KADMIN		token-get
 	ADMINRC
 	#COMMAND		"wget http://cdn.download.cirros-cloud.net/0.3.3/cirros-0.3.3-x86_64-disk.img"
