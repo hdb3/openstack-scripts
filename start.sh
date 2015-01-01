@@ -1,24 +1,19 @@
-#!/bin/bash -v
+#!/bin/bash -ev
 echo "This installer assumes that the ubuntu cloudstack packages are already installed and up-to-date."
 echo "It will look for a customisation script named 'custom.<HOST_NAME>"
-read -t 10 -n 1 c
-$( ./set-env.py ) &&
-sudo ./check-dns.sh $MY_IP $DB_IP &&
-# sudo bash openstack.apt.sh &&
-tar zxf content.tgz &&
-./build-script.sh &&
-# ./files.py total.txt total.files &&
-./files.py total.txt | sed -e "/bind-address/ s/10.0.0.11/$DB_IP/g ; s/10.0.0.11/$MY_IP/g" > total.files &&
-# ./sql.sh &&
-./filter.sh total.txt > total.sh &&
-sudo ./edit.py -v total.files  &&
-sudo ./edit.py -w total.files  &&
-source address-fix-template.sh $MY_IP > /tmp/address-fix.files &&
-./address-fix.sh /tmp/address-fix.files &&
-sudo service mysql restart &&
-sudo rabbitmqctl change_password guest admin &&
-./config-openvswitch.sh $EXTERNAL_IF &&
-# ./lvm.sh $LVM_DEV && ## doesnt work and don't know why - OK if given on command line...
-./build-db_sync.sh | bash -v &&
-./build-openstack.sh | bash -v &&
-./build-restart.sh | bash -v
+# sudo ./remove-upstart-overrides.sh # only needed in Ubuntu - use systemctl enable in RH
+$( ./set-env.py )
+./config-openvswitch.sh $EXTERNAL_IF
+./edit-conf.sh
+sed -e "s/\$MY_IP/$MY_IP/g" < admin-openrc.sh.template > admin-openrc.sh
+sed -e "s/\$MY_IP/$MY_IP/g" < demo-openrc.sh.template > demo-openrc.sh
+./build-db_sync.sh | bash -ve
+# ./service-restart.sh KEYSTONE | bash -ve
+# ./restart.sh
+./service-restart.sh | bash -ve
+! read -t 2 -i "allow keystone to start"
+./keystone-setup.sh | bash -ve
+./update-neutron-conf.sh
+./service-restart.sh NEUTRON | bash -ve
+./build-openstack.sh | bash -ve
+# ./restart.sh
