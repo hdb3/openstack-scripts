@@ -49,7 +49,8 @@ function SU {
 }
 
 function MYSQL {
-    echo "mysql -u $DBUSER --password=$DBPASS -vv -f -e \"$1\""
+    echo "mysql -u $DBUSER --password=$DBPASS -f -e \"$1\""
+    # echo "mysql -u $DBUSER --password=$DBPASS -vv -f -e \"$1\""
 }
 
 function DB {
