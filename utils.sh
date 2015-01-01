@@ -69,8 +69,10 @@ NOVA_SERVICES="nova-api nova-cert nova-consoleauth nova-scheduler nova-conductor
 NEUTRON_SERVICES="neutron-server neutron-plugin-openvswitch-agent neutron-l3-agent neutron-dhcp-agent neutron-metadata-agent neutron-plugin-openvswitch-agent"
 CINDER_SERVICES="cinder-scheduler cinder-api tgt cinder-volume"
 HEAT_SERVICES="heat-api heat-api-cfn heat-engine"
+CEILOMETER_SERVICES="ceilometer-agent-central ceilometer-agent-compute ceilometer-agent-notification ceilometer-alarm-evaluator ceilometer-alarm-notifier ceilometer-api ceilometer-collector"
 
-ALL="NOVA NEUTRON GLANCE CINDER HEAT"
+
+ALL="NOVA NEUTRON GLANCE CINDER HEAT CEILOMETER"
 function RESTART {
   for arg
     do
