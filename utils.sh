@@ -73,7 +73,7 @@ HEAT_SERVICES="heat-api heat-api-cfn heat-engine"
 CEILOMETER_SERVICES="ceilometer-agent-central ceilometer-agent-compute ceilometer-agent-notification ceilometer-alarm-evaluator ceilometer-alarm-notifier ceilometer-api ceilometer-collector"
 
 
-ALL="NOVA NEUTRON GLANCE CINDER HEAT CEILOMETER"
+ALL="KEYSTONE NOVA NEUTRON GLANCE CINDER HEAT CEILOMETER"
 function RESTART {
   for arg
     do
