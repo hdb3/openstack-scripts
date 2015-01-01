@@ -67,7 +67,7 @@ function _RESTART {
 KEYSTONE_SERVICES="keystone"
 GLANCE_SERVICES="glance-registry glance-api"
 NOVA_SERVICES="nova-api nova-cert nova-consoleauth nova-scheduler nova-conductor nova-novncproxy nova-compute"
-NEUTRON_SERVICES="neutron-server neutron-plugin-openvswitch-agent neutron-l3-agent neutron-dhcp-agent neutron-metadata-agent neutron-plugin-openvswitch-agent"
+NEUTRON_SERVICES="neutron-server neutron-l3-agent neutron-dhcp-agent neutron-metadata-agent"
 case ${OS_ENV} in
 DEB) NEUTRON_SERVICES="$NEUTRON_SERVICES neutron-plugin-openvswitch-agent" ;;
 YUM) NEUTRON_SERVICES="$NEUTRON_SERVICES neutron-openvswitch-agent" ;;
