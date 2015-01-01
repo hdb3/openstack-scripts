@@ -19,6 +19,7 @@ DEB)
 YUM)
     function _service {
       cmd=$1 ; shift
+      unset args
       for arg
       do
         if [[ $arg == neutron* ]]
@@ -85,4 +86,8 @@ function RESTART {
        SERVICES="${arg}_SERVICES"
       _RESTART "${!SERVICES}"
     done
+}
+
+function RESTART_ALL {
+    RESTART $ALL
 }
