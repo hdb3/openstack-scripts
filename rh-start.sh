@@ -1,6 +1,7 @@
 #!/bin/bash -ev
 echo "This installer assumes that the ubuntu cloudstack packages are already installed and up-to-date."
 echo "It will look for a customisation script named 'custom.<HOST_NAME>"
+sudo ./remove-upstart-overrides.sh # only needed in Ubuntu - use systemctl enable in RH
 $( ./set-env.py )
 ./config-openvswitch.sh $EXTERNAL_IF
 ./edit-conf.sh
