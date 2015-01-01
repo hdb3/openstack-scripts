@@ -74,7 +74,7 @@ DEB) NEUTRON_SERVICES="$NEUTRON_SERVICES neutron-plugin-openvswitch-agent" ;;
 YUM) NEUTRON_SERVICES="$NEUTRON_SERVICES neutron-openvswitch-agent" ;;
 esac
 
-CINDER_SERVICES="cinder-scheduler cinder-api tgt cinder-volume"
+CINDER_SERVICES="cinder-scheduler cinder-api cinder-volume"
 HEAT_SERVICES="heat-api heat-api-cfn heat-engine"
 CEILOMETER_SERVICES="ceilometer-agent-central ceilometer-agent-compute ceilometer-agent-notification ceilometer-alarm-evaluator ceilometer-alarm-notifier ceilometer-api ceilometer-collector"
 
