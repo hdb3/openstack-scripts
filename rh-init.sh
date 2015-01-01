@@ -6,4 +6,5 @@ yum upgrade -y
 yum install -y `cat yum.list`
 sudo rabbitmqctl change_password guest admin
 sudo ln -s /etc/neutron/plugins/ml2/ml2_conf.ini /etc/neutron/plugin.ini
+sudo sed -i 's,plugins/openvswitch/ovs_neutron_plugin.ini,plugin.ini,g' /usr/lib/systemd/system/neutron-openvswitch-agent.service
 sudo chown -R apache:apache /usr/share/openstack-dashboard/static
