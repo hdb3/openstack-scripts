@@ -3,6 +3,7 @@ echo "This installer assumes that the ubuntu cloudstack packages are already ins
 echo "It will look for a customisation script named 'custom.<HOST_NAME>"
 #next line should not be neccessary - but.....
 sudo systemctl restart rabbitmq-server
+read -t 10 -i "pausing to allow the rabbit to settle"
 sudo rabbitmqctl change_password guest admin
 $( ./set-env.py )
 ./config-openvswitch.sh $EXTERNAL_IF
