@@ -10,7 +10,7 @@ function state_report {
 		wrapper="ip netns exec $1"
 	fi
 	echo "### LINKS: $1 ###"
-	$wrapper ip link
+	$wrapper ip addr
 	echo "### IPTABLES: $1 ###"
 	#$wrapper iptables -S | grep -v '\(^-P INPUT ACCEPT$\)\|\(khjgdkfgaskdf\)'
 	$wrapper iptables -S | grep -v '\(^-P INPUT ACCEPT$\)\|\(^-P FORWARD ACCEPT$\)\|\(^-P OUTPUT ACCEPT$\)'
