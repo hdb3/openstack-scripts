@@ -40,6 +40,11 @@ YUM)
      exit 1 ;;
 esac
 
+function WAIT {
+  echo "echo \"$2\""
+  echo "sleep $1"
+}
+
 function END {
 echo "echo 'Finished...'"
 }

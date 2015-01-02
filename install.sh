@@ -11,6 +11,7 @@ DBPASS=root
   DB keystone keystone admin
   SU keystone "keystone-manage db_sync"
   RESTART KEYSTONE
+  WAIT 2 "allow keystone to settle"
 
   TOKEN_AUTH
   TENANT		admin	"Admin Tenant"
