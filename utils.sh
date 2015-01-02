@@ -25,11 +25,19 @@ YUM)
         args="$args $arg"
       done
       echo "sudo systemctl $cmd $args"
+    }
+    PREFIX=openstack-
+    function add_prefix {
+        unset ret
+        for arg
+        do
+          ret="$ret ${PREFIX}${arg}"
+        done
+        echo $ret
     } ;;
 
 *  ) echo "oops, unknown setting for \$OS_ENV not set, can't continue ($OS_ENV)"
      exit 1 ;;
-
 esac
 
 function END {
@@ -77,11 +85,11 @@ NEUTRON_SERVICES="$NEUTRON_SERVICES neutron-plugin-openvswitch-agent"
 CEILOMETER_SERVICES="ceilometer-agent-central ceilometer-agent-compute ceilometer-agent-notification ceilometer-alarm-evaluator ceilometer-alarm-notifier ceilometer-api ceilometer-collector" ;;
 YUM)
 NEUTRON_SERVICES="$NEUTRON_SERVICES neutron-openvswitch-agent"
-KEYSTONE_SERVICES=prefix $KEYSTONE_SERVICES
-GLANCE_SERVICES=prefix $GLANCE_SERVICES
-HEAT_SERVICES=prefix $HEAT_SERVICES
-CINDER_SERVICES=prefix $CINDER_SERVICES
-NOVA_SERVICES=prefix $NOVA_SERVICES
+KEYSTONE_SERVICES=`add_prefix $KEYSTONE_SERVICES`
+GLANCE_SERVICES=`add_prefix $GLANCE_SERVICES`
+HEAT_SERVICES=`add_prefix $HEAT_SERVICES`
+CINDER_SERVICES=`add_prefix $CINDER_SERVICES`
+NOVA_SERVICES=`add_prefix $NOVA_SERVICES`
 CEILOMETER_SERVICES="openstack-ceilometer-alarm-evaluator openstack-ceilometer-alarm-notifier openstack-ceilometer-api openstack-ceilometer-central openstack-ceilometer-collector openstack-ceilometer-compute openstack-ceilometer-notification" ;;
 esac
 
