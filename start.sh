@@ -7,3 +7,4 @@ $( ./set-env.py )
 sed -e "s/\$MY_IP/$MY_IP/g" < admin-openrc.sh.template > admin-openrc.sh
 sed -e "s/\$MY_IP/$MY_IP/g" < demo-openrc.sh.template > demo-openrc.sh
 ./install.sh | bash -ve
+./build-demo.sh | bash -ve
