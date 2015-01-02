@@ -145,3 +145,10 @@ function INTERFACE {
 function GATEWAY {
  echo "neutron router-gateway-set $1 $2"
 }
+
+function UPDATE_NEUTRON_CONF {
+  conf_file=/etc/neutron/neutron.conf
+  echo "SERVICE_TENANT_ID=`keystone tenant-list | awk '/ service / {print $2}'`"
+  echo "sudo sed -i.bak -e \"s/\\\$SERVICE_TENANT_ID/\$SERVICE_TENANT_ID/\" $conf_file"
+  echo "sudo chown --reference ${conf_file}.bak $conf_file"
+}
