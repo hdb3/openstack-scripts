@@ -8,5 +8,5 @@ if [[ $# > 0 ]]
       RESTART $arg
     done
   else
-    RESTART $ALL
+    RESTART_ALL
 fi

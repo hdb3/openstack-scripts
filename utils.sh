@@ -19,14 +19,10 @@ DEB)
 YUM)
     function _service {
       cmd=$1 ; shift
+      unset args
       for arg
       do
-        if [[ $arg == neutron* ]]
-        then
-          args="$args $arg"
-        else
-          args="$args openstack-${arg}"
-        fi
+        args="$args $arg"
       done
       echo "sudo systemctl $cmd $args"
     } ;;
@@ -67,13 +63,28 @@ function _RESTART {
 KEYSTONE_SERVICES="keystone"
 GLANCE_SERVICES="glance-registry glance-api"
 NOVA_SERVICES="nova-api nova-cert nova-consoleauth nova-scheduler nova-conductor nova-novncproxy nova-compute"
-NEUTRON_SERVICES="neutron-server neutron-plugin-openvswitch-agent neutron-l3-agent neutron-dhcp-agent neutron-metadata-agent neutron-plugin-openvswitch-agent"
+NEUTRON_SERVICES="neutron-server neutron-plugin-openvswitch-agent neutron-l3-agent neutron-dhcp-agent neutron-metadata-agent "
 CINDER_SERVICES="cinder-scheduler cinder-api tgt cinder-volume"
 HEAT_SERVICES="heat-api heat-api-cfn heat-engine"
 CEILOMETER_SERVICES="ceilometer-agent-central ceilometer-agent-compute ceilometer-agent-notification ceilometer-alarm-evaluator ceilometer-alarm-notifier ceilometer-api ceilometer-collector"
 
 
 ALL="KEYSTONE NOVA NEUTRON GLANCE CINDER HEAT CEILOMETER"
+case ${OS_ENV} in
+
+DEB)
+NEUTRON_SERVICES="$NEUTRON_SERVICES neutron-plugin-openvswitch-agent"
+CEILOMETER_SERVICES="ceilometer-agent-central ceilometer-agent-compute ceilometer-agent-notification ceilometer-alarm-evaluator ceilometer-alarm-notifier ceilometer-api ceilometer-collector" ;;
+YUM)
+NEUTRON_SERVICES="$NEUTRON_SERVICES neutron-openvswitch-agent"
+KEYSTONE_SERVICES=prefix $KEYSTONE_SERVICES
+GLANCE_SERVICES=prefix $GLANCE_SERVICES
+HEAT_SERVICES=prefix $HEAT_SERVICES
+CINDER_SERVICES=prefix $CINDER_SERVICES
+NOVA_SERVICES=prefix $NOVA_SERVICES
+CEILOMETER_SERVICES="openstack-ceilometer-alarm-evaluator openstack-ceilometer-alarm-notifier openstack-ceilometer-api openstack-ceilometer-central openstack-ceilometer-collector openstack-ceilometer-compute openstack-ceilometer-notification" ;;
+esac
+
 function RESTART {
   for arg
     do
@@ -81,3 +92,8 @@ function RESTART {
       _RESTART "${!SERVICES}"
     done
 }
+
+function RESTART_ALL {
+    RESTART $ALL
+}
+
