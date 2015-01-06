@@ -4,6 +4,7 @@ echo "It will look for a customisation script named 'custom.<HOST_NAME>"
 $( ./set-env.py )
 ./config-openvswitch.sh $EXTERNAL_IF
 ./edit-conf.sh
+sudo sysctl -p
 sed -e "s/\$MY_IP/$MY_IP/g" < admin-openrc.sh.template > admin-openrc.sh
 sed -e "s/\$MY_IP/$MY_IP/g" < demo-openrc.sh.template > demo-openrc.sh
 ./install.sh | bash -ve
