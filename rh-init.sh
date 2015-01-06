@@ -4,8 +4,10 @@ yum install -y http://dl.fedoraproject.org/pub/epel/7/x86_64/e/epel-release-7-5.
 yum install -y http://rdo.fedorapeople.org/openstack-juno/rdo-release-juno.rpm
 yum upgrade -y
 yum install -y `cat yum.list`
+for s in `cat rh-core-services` ; do systemctl enable $s ; done
 sed -i /etc/selinux/config -e 's/enforcing/disabled/'
 systemctl disable firewalld
+systemctl stop firewalld
 systemctl enable mariadb
 systemctl enable openvswitch
 systemctl enable rabbitmq-server
