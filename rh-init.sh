@@ -4,19 +4,12 @@ yum install -y http://dl.fedoraproject.org/pub/epel/7/x86_64/e/epel-release-7-5.
 yum install -y http://rdo.fedorapeople.org/openstack-juno/rdo-release-juno.rpm
 yum upgrade -y
 yum install -y `cat yum.list`
-for s in `cat rh-core-services` ; do systemctl enable $s ; done
+for s in `grep -v '^#' rh-core-services` ; do systemctl enable $s ; systemctl start $s ; done
 sed -i /etc/selinux/config -e 's/enforcing/disabled/'
 systemctl disable NetworkManager
 systemctl stop NetworkManager
 systemctl disable firewalld
 systemctl stop firewalld
-systemctl enable mariadb
-systemctl enable openvswitch
-systemctl enable rabbitmq-server
-systemctl start mariadb
-systemctl start openvswitch
-systemctl start rabbitmq-server
-systemctl start memcached
 rabbitmqctl change_password guest admin
 mysql_secure_installation
 ln -s /etc/neutron/plugins/ml2/ml2_conf.ini /etc/neutron/plugin.ini
