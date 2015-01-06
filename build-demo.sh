@@ -23,5 +23,5 @@ set -e
 
 	COMMAND		"cinder		create	--display-name	demo-volume1	1"
 
-	COMMAND		"heat		stack-create	-f	test-stack.yml	-P	\"ImageID=cirros-0.3.3-x86_64;NetID=\$NET_ID\"	testStack"
+	COMMAND		"heat		stack-create	-f	test-stack.yml	-P	\"ImageID=cirros;NetID=\$NET_ID\"	testStack"
 	END

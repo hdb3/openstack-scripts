@@ -52,6 +52,7 @@ DBPASS=root
   ENDPOINT	regionOne	compute	"8774/v2/%\(tenant_id\)s"
 
   SU nova "nova-manage db sync"
+  WAIT 2 "allow nova to settle"
   RESTART NOVA
 
 # NEUTRON
@@ -64,6 +65,7 @@ DBPASS=root
 
   COMMAND		"./update-neutron-conf.sh"
   SU neutron "neutron-db-manage --config-file /etc/neutron/neutron.conf --config-file /etc/neutron/plugins/ml2/ml2_conf.ini upgrade juno"
+  WAIT 2 "allow nova to settle"
   RESTART NOVA
   RESTART NEUTRON
 
