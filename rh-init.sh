@@ -6,6 +6,8 @@ yum upgrade -y
 yum install -y `cat yum.list`
 for s in `cat rh-core-services` ; do systemctl enable $s ; done
 sed -i /etc/selinux/config -e 's/enforcing/disabled/'
+systemctl disable NetworkManager
+systemctl stop NetworkManager
 systemctl disable firewalld
 systemctl stop firewalld
 systemctl enable mariadb
