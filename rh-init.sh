@@ -14,6 +14,7 @@ systemctl enable rabbitmq-server
 systemctl start mariadb
 systemctl start openvswitch
 systemctl start rabbitmq-server
+systemctl start memcached
 rabbitmqctl change_password guest admin
 mysql_secure_installation
 ln -s /etc/neutron/plugins/ml2/ml2_conf.ini /etc/neutron/plugin.ini

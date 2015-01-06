@@ -1,4 +1,5 @@
 httpd
+memcached
 iscsi
 libvirtd
 lvm2-monitor
@@ -23,7 +24,6 @@ openstack-nova-cert
 openstack-nova-compute
 openstack-nova-conductor
 openstack-nova-consoleauth
-openstack-nova-metadata-api
 openstack-nova-novncproxy
 openstack-nova-scheduler
 openvswitch
