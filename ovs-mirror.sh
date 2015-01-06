@@ -1,4 +1,4 @@
-#!/bin/bash -e
+#!/bin/bash
 
 sudo ip link add dummy0 type dummy
 sudo ip link set link dev dummy0 up
