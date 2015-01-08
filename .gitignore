@@ -2,3 +2,4 @@ content/
 tmp/
 admin-openrc.sh
 demo-openrc.sh
+.start_run_flag
