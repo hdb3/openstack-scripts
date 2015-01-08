@@ -9,7 +9,13 @@ set -e
 	IMAGE-LIST
 
 	EXTNET		ext-net
+if [[ $# == 2 ]]
+  then
+	SUBNET	ext-net		ext-subnet	10.30.65.1      10.30.65.0/24	$1		$2
+  else
 	SUBNET	ext-net		ext-subnet	10.30.65.1      10.30.65.0/24	10.30.65.2	10.30.65.50
+fi
+
 
 	NET		mgmt-net
 	SUBNET		mgmt-net	mgmt-subnet	172.16.0.1	172.16.0.0/24
