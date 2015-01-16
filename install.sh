@@ -70,7 +70,7 @@ DBPASS=root
   RESTART NEUTRON
   COMMAND	"sudo ip link set dev br-int up"
 #  COMMAND	"sudo ip link set dev br-tun up"
-  COMMAND	"sudo ip link set dev br-ex up"
+  COMMAND	"sudo ip link set dev br-ex1 up"
 
 # CINDER
   DB cinder cinder admin

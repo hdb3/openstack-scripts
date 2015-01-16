@@ -2,7 +2,7 @@
 [ovs]
 enable_tunneling = True
 local_ip = $MY_IP
-bridge_mappings = external:br-ex
+bridge_mappings = external:br-ex1
 [ml2_type_flat]
 flat_networks = external
 [agent]
@@ -21,7 +21,7 @@ enable_security_group = True
 [DEFAULT]
 interface_driver = neutron.agent.linux.interface.OVSInterfaceDriver
 use_namespaces = True
-external_network_bridge = br-ex
+external_network_bridge = br-ex1
 {/etc/neutron/dhcp_agent.ini}
 [DEFAULT]
 dhcp_driver = neutron.agent.linux.dhcp.Dnsmasq
