@@ -1,4 +1,5 @@
 #!/bin/bash
+$( ./set-env.py )
 source openstack-utils.sh
 set -e
 

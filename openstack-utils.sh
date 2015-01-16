@@ -120,7 +120,7 @@ fi
 # neutron net-create ext-net --shared --router:external True --provider:physical_network external --provider:network_type flat
 # NET ext-net
 function EXTNET {
- echo "neutron net-create $1 --shared --router:external True --provider:physical_network external --provider:network_type flat"
+ echo "neutron net-create $1 --shared --router:external True --provider:physical_network $2 --provider:network_type flat"
 }
 
 # NET ext-net

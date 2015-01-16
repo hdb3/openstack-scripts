@@ -1,4 +1,5 @@
 #!/bin/bash
+$( ./set-env.py )
 source openstack-utils.sh
 set -e
 
@@ -11,7 +12,7 @@ set -e
 	NETIMAGE	"Fedora"	"https://download.fedoraproject.org/pub/alt/openstack/20/x86_64/Fedora-x86_64-20-20140618-sda.qcow2"	qcow2	bare    True
 	IMAGE-LIST
 
-	EXTNET		ext-net
+	EXTNET		ext-net		external1
 	#		network name	subnet name	gateway		CIDR		alloc start	alloc end
 	SUBNET	ext-net		ext-subnet	10.30.65.1      10.30.65.0/24	10.30.65.2	10.30.65.50
 	# SUBNET	ext-net		ext-subnet	192.168.1.254      192.168.1.0/24	192.168.1.220	192.168.1.239
