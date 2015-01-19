@@ -2,8 +2,8 @@
 [ovs]
 enable_tunneling = True
 local_ip = $MY_IP
-bridge_mappings = external1:br-ex1
-network_vlan_ranges = external1
+bridge_mappings = external1:br-ex1,external2:br-ex2,external3:br-ex3,external4:br-ex4
+network_vlan_ranges = external1,external2,external3,external4
 [ml2_type_flat]
 flat_networks = *
 [agent]
