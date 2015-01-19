@@ -22,6 +22,8 @@ enable_security_group = True
 [DEFAULT]
 interface_driver = neutron.agent.linux.interface.OVSInterfaceDriver
 use_namespaces = True
+external_network_bridge=
+gateway_external_network_id=
 {/etc/neutron/dhcp_agent.ini}
 [DEFAULT]
 dhcp_driver = neutron.agent.linux.dhcp.Dnsmasq
