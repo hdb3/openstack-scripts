@@ -20,6 +20,7 @@ enable_ipset = True
 enable_security_group = True
 {/etc/neutron/l3_agent.ini}
 [DEFAULT]
+external_network_bridge = br-ex1
 interface_driver = neutron.agent.linux.interface.OVSInterfaceDriver
 use_namespaces = True
 {/etc/neutron/dhcp_agent.ini}
