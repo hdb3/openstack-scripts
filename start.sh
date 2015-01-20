@@ -1,4 +1,4 @@
-#!/bin/bash -ev
+#!/bin/bash -e
 echo "This installer assumes that the ubuntu cloudstack packages are already installed and up-to-date."
 echo "It will look for a customisation script named 'custom.<HOST_NAME>"
 $( ./set-env.py )

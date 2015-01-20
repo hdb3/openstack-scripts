@@ -14,6 +14,7 @@ do
   sudo ovs-vsctl --may-exist add-br br-ex${n}
   sudo ovs-vsctl --may-exist add-port br-ex${n} $interface
   sudo ip link set dev $interface up
+  sudo ip link set dev br-ex${n} up"
   let n=n+1
 done
 echo "[ovs]"                        > os.neutron-bridge-mappings
