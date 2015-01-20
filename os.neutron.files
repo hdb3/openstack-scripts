@@ -1,5 +1,6 @@
 {/etc/neutron/neutron.conf}
 [DEFAULT]
+verbose = True
 nova_region_name = regionOne
 notify_nova_on_port_status_changes = True
 allow_overlapping_ips = True
