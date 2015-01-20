@@ -17,6 +17,7 @@ do
   sudo ip link set dev br-ex${n} up"
   let n=n+1
 done
-echo "[ovs]"                        > os.neutron-bridge-mappings
-echo "${mappings}"                 >> os.neutron-bridge-mappings
-echo "${vlans}"                    >> os.neutron-bridge-mappings
+echo "{/etc/neutron/l3_agent.ini}"  > os.neutron-bridge-mappings.files
+echo "[ovs]"                       >> os.neutron-bridge-mappings.files
+echo "${mappings}"                 >> os.neutron-bridge-mappings.files
+echo "${vlans}"                    >> os.neutron-bridge-mappings.files
