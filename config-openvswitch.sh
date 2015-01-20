@@ -9,7 +9,7 @@ do
     vlans="network_vlan_ranges = external1"
   else
     mappings="${mappings},external${n}:br-ex${n}"
-    vlans="${vlans},externa${n}1"
+    vlans="${vlans},external${n}"
   fi
   sudo ovs-vsctl --may-exist add-br br-ex${n}
   sudo ovs-vsctl --may-exist add-port br-ex${n} $interface
