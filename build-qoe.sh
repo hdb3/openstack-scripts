@@ -14,6 +14,7 @@ set -e
 
 # test network on port 2
 
+	COMMAND		"sleep 5"
 	EXTNET		ext-net2	external2
 	SUBNET		ext-net2	ext-subnet2	192.168.0.1      192.168.0.0/24	192.168.0.100	192.168.0.199
 
