@@ -1,6 +1,8 @@
 httpd
 memcached
 iscsi
+target
+tgtd
 libvirtd
 lvm2-monitor
 mariadb
