@@ -61,3 +61,4 @@ python-pecan
 sysfsutils
 targetcli
 tgt-admin
+scsi-target-utils
