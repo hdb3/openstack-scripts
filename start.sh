@@ -2,9 +2,10 @@
 echo "This installer assumes that the ubuntu cloudstack packages are already installed and up-to-date."
 echo "It will look for a customisation script named 'custom.<HOST_NAME>"
 $( ./set-env.py )
+sudo bash -e ./ovs-clean.sh
+./config-openvswitch.sh $EXTERNAL_IF
 if [[ ! -e .start_run_flag ]]
   then
-    ./config-openvswitch.sh $EXTERNAL_IF
     ./edit-conf.sh
     sudo sysctl -p
     sed -e "s/\$MY_IP/$MY_IP/g" < admin-openrc.sh.template > admin-openrc.sh
