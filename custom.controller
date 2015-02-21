@@ -1,0 +1,4 @@
+export EXTERNAL_IF=eno16777736
+export MY_IP=172.16.154.130
+export DB_IP=127.0.0.1
+export OS_ENV=YUM
