@@ -8,6 +8,6 @@ iscsi_helper = tgtadm
 volume_name_template = volume-%s
 volume_group = cinder-volumes
 # volume_group = cinder-vg
-glance_host = $MY_IP
+glance_host = glance
 notification_driver = cinder.openstack.common.notifier.rpc_notifier
 volumes_dir = /var/lib/cinder/volumes

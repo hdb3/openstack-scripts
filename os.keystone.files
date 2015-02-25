@@ -2,8 +2,8 @@
 [DEFAULT]
 auth_strategy = keystone
 [keystone_authtoken]
-identity_uri = http://$MY_IP:35357
-auth_uri = http://$MY_IP:5000/v2.0
+identity_uri = http://keystone:35357
+auth_uri = http://keystone:5000/v2.0
 admin_tenant_name = service
 admin_user = neutron
 admin_password = admin
@@ -11,8 +11,8 @@ admin_password = admin
 [DEFAULT]
 auth_strategy = keystone
 [keystone_authtoken]
-identity_uri = http://$MY_IP:35357
-auth_uri = http://$MY_IP:5000/v2.0
+identity_uri = http://keystone:35357
+auth_uri = http://keystone:5000/v2.0
 admin_tenant_name = service
 admin_user = cinder
 admin_password = admin
@@ -20,8 +20,8 @@ admin_password = admin
 [DEFAULT]
 auth_strategy = keystone
 [keystone_authtoken]
-identity_uri = http://$MY_IP:35357
-auth_uri = http://$MY_IP:5000/v2.0
+identity_uri = http://keystone:35357
+auth_uri = http://keystone:5000/v2.0
 admin_tenant_name = service
 admin_user = heat
 admin_password = admin
@@ -29,8 +29,8 @@ admin_password = admin
 [DEFAULT]
 auth_strategy = keystone
 [keystone_authtoken]
-auth_uri = http://$MY_IP:5000/v2.0
-identity_uri = http://$MY_IP:35357
+auth_uri = http://keystone:5000/v2.0
+identity_uri = http://keystone:35357
 admin_tenant_name = service
 admin_user = glance
 admin_password = admin
@@ -38,8 +38,8 @@ admin_password = admin
 [DEFAULT]
 auth_strategy = keystone
 [keystone_authtoken]
-auth_uri = http://$MY_IP:5000/v2.0
-identity_uri = http://$MY_IP:35357
+auth_uri = http://keystone:5000/v2.0
+identity_uri = http://keystone:35357
 admin_tenant_name = service
 admin_user = glance
 admin_password = admin
@@ -47,8 +47,8 @@ admin_password = admin
 [DEFAULT]
 auth_strategy = keystone
 [keystone_authtoken]
-auth_uri = http://$MY_IP:5000/v2.0
-identity_uri = http://$MY_IP:35357
+auth_uri = http://keystone:5000/v2.0
+identity_uri = http://keystone:35357
 admin_tenant_name = service
 admin_user = nova
 admin_password = admin
@@ -56,8 +56,8 @@ admin_password = admin
 [DEFAULT]
 auth_strategy = keystone
 [keystone_authtoken]
-auth_uri = http://$MY_IP:5000/v2.0
-identity_uri = http://$MY_IP:35357
+auth_uri = http://keystone:5000/v2.0
+identity_uri = http://keystone:35357
 admin_tenant_name = service
 admin_user = ceilometer
 admin_password = admin

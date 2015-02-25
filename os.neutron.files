@@ -6,10 +6,10 @@ notify_nova_on_port_status_changes = True
 allow_overlapping_ips = True
 nova_admin_username = nova
 notify_nova_on_port_data_changes = True
-nova_admin_auth_url = http://$MY_IP:35357/v2.0
+nova_admin_auth_url = http://keystone:35357/v2.0
 nova_admin_tenant_id = $SERVICE_TENANT_ID
 service_plugins = router
-nova_url = http://$MY_IP:8774/v2
+nova_url = http://controller:8774/v2
 nova_admin_password = admin
 core_plugin = ml2
 [agent]

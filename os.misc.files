@@ -4,7 +4,7 @@ heat_waitcondition_server_url = http://$MY_IP:8000/v1/waitcondition
 heat_metadata_server_url = http://$MY_IP:8000
 log_dir=/var/log/heat
 [ec2authtoken]
-auth_uri = http://$MY_IP:5000/v2.0
+auth_uri = http://keystone:5000/v2.0
 {/etc/ceilometer/ceilometer.conf}
 [DEFAULT]
 log_dir = /var/log/ceilometer
@@ -15,7 +15,7 @@ metering_secret = METERING_SECRET
 [service_credentials]
 os_tenant_name = service
 os_username = ceilometer
-os_auth_url = http://$MY_IP:5000/v2.0
+os_auth_url = http://keystone:5000/v2.0
 os_password = admin
 {/etc/keystone/keystone.conf}
 [DEFAULT]
@@ -27,10 +27,10 @@ driver = keystone.token.persistence.backends.sql.Token
 [extra_headers]
 Distribution = Ubuntu
 {/etc/mongodb.conf}
-bind_ip = $MY_IP
+bind_ip = mongo
 {/etc/mysql/my.cnf}
 [mysqld]
-bind-address = $DB_IP
+bind-address = maria
 character-set-server = utf8
 collation-server = utf8_general_ci
 default-storage-engine = innodb
