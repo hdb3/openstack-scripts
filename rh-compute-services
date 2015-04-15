@@ -1,0 +1,4 @@
+libvirtd
+openvswitch
+neutron-openvswitch-agent
+openstack-nova-compute

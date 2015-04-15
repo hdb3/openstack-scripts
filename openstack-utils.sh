@@ -111,9 +111,9 @@ function IMAGE-LIST {
 # SUBNET ext-net ext-subnet --allocation-pool start=10.0.6.2,end=10.0.6.50 --disable-dhcp --gateway 10.0.6.1 10.0.6.0/24
 function SUBNET {
 if [[ $# > 5 ]] ; then
- echo "neutron subnet-create $1 --name $2 --dns-nameserver 8.8.8.8 --enable-dhcp --gateway $3 --allocation-pool start=$5,end=$6 $4"
+ echo "neutron subnet-create $1 --name $2 --dns-nameserver $NAMESERVER --enable-dhcp --gateway $3 --allocation-pool start=$5,end=$6 $4"
 else
- echo "neutron subnet-create $1 --name $2 --dns-nameserver 8.8.8.8 --enable-dhcp --gateway $3 $4"
+ echo "neutron subnet-create $1 --name $2 --dns-nameserver $NAMESERVER --enable-dhcp --gateway $3 $4"
 fi
 }
 
