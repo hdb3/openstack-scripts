@@ -17,4 +17,4 @@ sed -e "s/\$MY_IP/$MY_IP/g" < demo-openrc.sh.template > demo-openrc.sh
 ./install.sh | bash -ve
 bash -e default-settings.sh
 ./build-images.sh | bash -ve
-#./build-demo.sh | bash -ve
+./build-demo.sh | bash -ve
