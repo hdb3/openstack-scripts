@@ -1,0 +1,45 @@
+The neutton configurartion approach is extended based on the blog: http://www.opencloudblog.com/?p=557 /614 /630 /654 /675
+This allows the direct connection to external networks over VLAN trunks, i.e. without NAT.
+It also gives an approach for running all of the various network connections needed between OpenStack nodes over a single physical trunk, again using VLAN).
+
+The change affects ml2_conf.ini (aka plugin.ini) and the liniux hypervisor host network configuration, i.e. OpenVSwitch.
+
+ml2_conf.ini:
+configure a vlan bridge in OVS (e.g. br-vlan), and map it in [ovs]:bridge_mappings
+[ovs]
+bridge_mappings = vlannet:br-vlan
+
+ensure 'vlan' is included in the [ml2]:type_drivers list
+[ml2]
+type_drivers = vxlan,local,vlan,flat
+
+populate [ml2_type_vlan]:network_vlan_ranges
+
+[ml2_type_vlan]
+network_vlan_ranges = vlannet:100:299
+
+OpenVSwitch
+The blog config creates an additional aggregate bridge (br-uplink) which we probably don't need, viz.:
+	ovs-vsctl add-br br-uplink
+as well as br-vlan:
+	ovs-vsctl add-br br-vlan
+and then configures some VLAN specific stuff for the physical interface port in OVS
+	ovs-vsctl add-port br-uplink eth1 -- set port eth1 vlan_mode=trunk trunk=100,101,200,201
+then finally joins br-uplink to br-vlan:
+	ovs-vsctl add-port br-vlan patch-to-uplink -- set Interface patch-to-uplink type=patch options:peer=patch-to-vlan
+	ovs-vsctl add-port br-uplink patch-to-vlan -- set Interface patch-to-vlan type=patch options:peer=patch-to-uplink
+
+We don't need br-uplink, so the following is possible easier (eth1 is the physical port - substitute as required....)
+	ovs-vsctl add-br br-vlan
+	ovs-vsctl add-port br-vlan eth1 -- set port eth1 vlan_mode=trunk trunk=100,101,200,201
+
+
+Neutron Network Provisioning
+Now that 'vlannet' is defined (with VLAN tags 100/101/200/201) we can configure neutron networks: ($VLAN is the tag, 100, 101, etc...; $EXTNET is an arbitrary name
+
+	neutron net-create --provider:network_type=vlan --provider:physical_network=vlannet --router:external=false --provider:segmentation_id=$VLAN --shared  $EXTNET
+	neutron subnet-create --allocation-pool start=$IPSTART,end=$IPEND --no-gateway --host-route destination=0.0.0.0/0,nexthop=$IPGW --enable-dhcp --name $EXTNET --dns-nameserver $DNS $NETID  $SUBNET
+
+NOte: $NETID in the subnet-create is the UUID returned from building the net. $IPSTART,$IPEND,$IPGW,$DNS,$SUBNET have the obvious meanings...
+If default gateway not needed, then neither is --host-route
+
