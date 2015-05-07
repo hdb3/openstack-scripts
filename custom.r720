@@ -1,4 +1,4 @@
-export EXTERNAL_IF=p4p1
-export MY_IP=10.30.65.205
+export EXTERNAL_IF=em2
+export MY_IP=10.30.65.210
 export DB_IP=127.0.0.1
 export OS_ENV=YUM
